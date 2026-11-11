@@ -1,0 +1,1082 @@
+{
+ "version": 1,
+ "generated": "2026-11-11T05:47:14Z",
+ "workspace": "whole-brain-pinn",
+ "languages": [
+  "en",
+  "es"
+ ],
+ "ai_history": true,
+ "entries": {
+  "/api/agents": {
+   "file": "snapshot/en/api/agents.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/agents?lang=es": {
+   "file": "snapshot/es/api/agents__0a4d7d9d82bd.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/ai-history": {
+   "file": "snapshot/en/api/ai-history.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/ai-history?lang=es": {
+   "file": "snapshot/es/api/ai-history__0a4d7d9d82bd.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=implementations%2Fwhole-brain-pinn%2FWhole-Brain-PINN%2FResults%2Fpilot%2Fsummary.json": {
+   "file": "snapshot/en/api/artifact__7afcf0ce95c8.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=implementations%2Fwhole-brain-pinn%2FWhole-Brain-PINN%2FResults%2Ftiming.json": {
+   "file": "snapshot/en/api/artifact__f097c485ed7c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=implementations%2Fwhole-brain-pinn%2Frequirements.txt": {
+   "file": "snapshot/en/api/artifact__09bfa8a3a6e8.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=papersmith.yaml": {
+   "file": "snapshot/en/api/artifact__24b6d9e062f2.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r01.md": {
+   "file": "snapshot/en/api/artifact__7828fe8aeb38.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r02.md": {
+   "file": "snapshot/en/api/artifact__14dcb95b426c.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r03.md": {
+   "file": "snapshot/en/api/artifact__4a212098d47b.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r04.md": {
+   "file": "snapshot/en/api/artifact__f4fcc5e5484f.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r05.md": {
+   "file": "snapshot/en/api/artifact__1533f3271b86.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.md": {
+   "file": "snapshot/en/api/artifact__f52f34f9bd5b.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.sky.json": {
+   "file": "snapshot/en/api/artifact__aa519bddff05.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r07.md": {
+   "file": "snapshot/en/api/artifact__28f175331ef5.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r07.sky.json": {
+   "file": "snapshot/en/api/artifact__268db7841212.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r08.md": {
+   "file": "snapshot/en/api/artifact__68cd8347be3f.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r08.sky.json": {
+   "file": "snapshot/en/api/artifact__a2f78a411db4.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r09.md": {
+   "file": "snapshot/en/api/artifact__4af9ac0c43d3.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r09.sky.json": {
+   "file": "snapshot/en/api/artifact__252dae69b646.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r10.md": {
+   "file": "snapshot/en/api/artifact__761a44dab5ef.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r10.sky.json": {
+   "file": "snapshot/en/api/artifact__aab6137c959c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r11.md": {
+   "file": "snapshot/en/api/artifact__f75d9a9e11fd.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r11.sky.json": {
+   "file": "snapshot/en/api/artifact__16137116eef7.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r12.md": {
+   "file": "snapshot/en/api/artifact__eb940c4381c7.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r12.sky.json": {
+   "file": "snapshot/en/api/artifact__5e3536126fc7.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r13.md": {
+   "file": "snapshot/en/api/artifact__6384967387a9.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r13.sky.json": {
+   "file": "snapshot/en/api/artifact__eb441f25679a.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r14.md": {
+   "file": "snapshot/en/api/artifact__b4b2ef42f526.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r14.sky.json": {
+   "file": "snapshot/en/api/artifact__a5c5d973394e.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=requirements.txt": {
+   "file": "snapshot/en/api/artifact__8a01722a0cee.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F01-materials-and-methods.md": {
+   "file": "snapshot/en/api/artifact__4975c549cc90.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F02-experimental-setup.md": {
+   "file": "snapshot/en/api/artifact__af9fba9ce514.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F03-results-and-discussion.md": {
+   "file": "snapshot/en/api/artifact__2e3e0781f5d5.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F04-limitations.md": {
+   "file": "snapshot/en/api/artifact__bbd17d5e9c19.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F05-related-work.md": {
+   "file": "snapshot/en/api/artifact__0c3e4d8ecff7.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F06-introduction.md": {
+   "file": "snapshot/en/api/artifact__723a6e0d1f87.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F07-conclusions.md": {
+   "file": "snapshot/en/api/artifact__43c58f9e7765.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F08-abstract.md": {
+   "file": "snapshot/en/api/artifact__da7003ea9733.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F09-title-and-keywords.md": {
+   "file": "snapshot/en/api/artifact__49a05f806313.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sections%2F10-back-matter.md": {
+   "file": "snapshot/en/api/artifact__335eb307b2af.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sota-pool%2Fatlas.json": {
+   "file": "snapshot/en/api/artifact__8c3a94cfe6e5.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?lang=es&path=sota-pool%2Fcandidates.json": {
+   "file": "snapshot/en/api/artifact__af7a2d0390ad.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=implementations%2Fwhole-brain-pinn%2FWhole-Brain-PINN%2FResults%2Fpilot%2Fsummary.json": {
+   "file": "snapshot/en/api/artifact__7afcf0ce95c8.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=implementations%2Fwhole-brain-pinn%2FWhole-Brain-PINN%2FResults%2Ftiming.json": {
+   "file": "snapshot/en/api/artifact__f097c485ed7c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=implementations%2Fwhole-brain-pinn%2Frequirements.txt": {
+   "file": "snapshot/en/api/artifact__09bfa8a3a6e8.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=papersmith.yaml": {
+   "file": "snapshot/en/api/artifact__24b6d9e062f2.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r01.md": {
+   "file": "snapshot/en/api/artifact__7828fe8aeb38.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r02.md": {
+   "file": "snapshot/en/api/artifact__14dcb95b426c.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r03.md": {
+   "file": "snapshot/en/api/artifact__4a212098d47b.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r04.md": {
+   "file": "snapshot/en/api/artifact__f4fcc5e5484f.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r05.md": {
+   "file": "snapshot/en/api/artifact__1533f3271b86.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.md": {
+   "file": "snapshot/en/api/artifact__f52f34f9bd5b.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.sky.json": {
+   "file": "snapshot/en/api/artifact__aa519bddff05.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r07.md": {
+   "file": "snapshot/en/api/artifact__28f175331ef5.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r07.sky.json": {
+   "file": "snapshot/en/api/artifact__268db7841212.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r08.md": {
+   "file": "snapshot/en/api/artifact__68cd8347be3f.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r08.sky.json": {
+   "file": "snapshot/en/api/artifact__a2f78a411db4.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r09.md": {
+   "file": "snapshot/en/api/artifact__4af9ac0c43d3.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r09.sky.json": {
+   "file": "snapshot/en/api/artifact__252dae69b646.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r10.md": {
+   "file": "snapshot/en/api/artifact__761a44dab5ef.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r10.sky.json": {
+   "file": "snapshot/en/api/artifact__aab6137c959c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r11.md": {
+   "file": "snapshot/en/api/artifact__f75d9a9e11fd.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r11.sky.json": {
+   "file": "snapshot/en/api/artifact__16137116eef7.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r12.md": {
+   "file": "snapshot/en/api/artifact__eb940c4381c7.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r12.sky.json": {
+   "file": "snapshot/en/api/artifact__5e3536126fc7.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r13.md": {
+   "file": "snapshot/en/api/artifact__6384967387a9.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r13.sky.json": {
+   "file": "snapshot/en/api/artifact__eb441f25679a.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r14.md": {
+   "file": "snapshot/en/api/artifact__b4b2ef42f526.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=proposals%2Fresearch-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r14.sky.json": {
+   "file": "snapshot/en/api/artifact__a5c5d973394e.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=requirements.txt": {
+   "file": "snapshot/en/api/artifact__8a01722a0cee.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F01-materials-and-methods.md": {
+   "file": "snapshot/en/api/artifact__4975c549cc90.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F02-experimental-setup.md": {
+   "file": "snapshot/en/api/artifact__af9fba9ce514.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F03-results-and-discussion.md": {
+   "file": "snapshot/en/api/artifact__2e3e0781f5d5.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F04-limitations.md": {
+   "file": "snapshot/en/api/artifact__bbd17d5e9c19.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F05-related-work.md": {
+   "file": "snapshot/en/api/artifact__0c3e4d8ecff7.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F06-introduction.md": {
+   "file": "snapshot/en/api/artifact__723a6e0d1f87.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F07-conclusions.md": {
+   "file": "snapshot/en/api/artifact__43c58f9e7765.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F08-abstract.md": {
+   "file": "snapshot/en/api/artifact__da7003ea9733.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F09-title-and-keywords.md": {
+   "file": "snapshot/en/api/artifact__49a05f806313.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sections%2F10-back-matter.md": {
+   "file": "snapshot/en/api/artifact__335eb307b2af.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/artifact?path=sota-pool%2Fatlas.json": {
+   "file": "snapshot/en/api/artifact__8c3a94cfe6e5.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/artifact?path=sota-pool%2Fcandidates.json": {
+   "file": "snapshot/en/api/artifact__af7a2d0390ad.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/candidates/view": {
+   "file": "snapshot/en/api/atlas/candidates/view.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/atlas/candidates/view?lang=es": {
+   "file": "snapshot/es/api/atlas/candidates/view__0a4d7d9d82bd.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/atlas/cited-papers": {
+   "file": "snapshot/en/api/atlas/cited-papers.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/cited-papers?lang=es": {
+   "file": "snapshot/en/api/atlas/cited-papers.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/coverage": {
+   "file": "snapshot/en/api/atlas/coverage.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/coverage?lang=es": {
+   "file": "snapshot/en/api/atlas/coverage.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/manuscript": {
+   "file": "snapshot/en/api/atlas/manuscript.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/manuscript-graph": {
+   "file": "snapshot/en/api/atlas/manuscript-graph.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/manuscript-graph/view": {
+   "file": "snapshot/en/api/atlas/manuscript-graph/view.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/atlas/manuscript-graph/view?lang=es": {
+   "file": "snapshot/es/api/atlas/manuscript-graph/view__0a4d7d9d82bd.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/atlas/manuscript-graph?lang=es": {
+   "file": "snapshot/en/api/atlas/manuscript-graph.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/manuscript?lang=es": {
+   "file": "snapshot/en/api/atlas/manuscript.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/novelty/view": {
+   "file": "snapshot/en/api/atlas/novelty/view.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/atlas/novelty/view?lang=es": {
+   "file": "snapshot/es/api/atlas/novelty/view__0a4d7d9d82bd.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1002%2Fadvs.202504346": {
+   "file": "snapshot/en/api/atlas/reference__d9ea2ce52091.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1002%2Fadvs.202504346&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__d9ea2ce52091.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1002%2Fhbm.20704": {
+   "file": "snapshot/en/api/atlas/reference__115836781c5a.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1002%2Fhbm.20704&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__115836781c5a.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1007%2Fs10915-022-01939-z": {
+   "file": "snapshot/en/api/atlas/reference__45c63115b8b0.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1007%2Fs10915-022-01939-z&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__45c63115b8b0.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.cma.2025.117914": {
+   "file": "snapshot/en/api/atlas/reference__2175f9152807.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.cma.2025.117914&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__2175f9152807.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.jcp.2023.112342": {
+   "file": "snapshot/en/api/atlas/reference__6487f005154c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.jcp.2023.112342&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__6487f005154c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neunet.2023.03.040": {
+   "file": "snapshot/en/api/atlas/reference__70ae2e1d8652.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neunet.2023.03.040&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__70ae2e1d8652.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neuroimage.2011.01.085": {
+   "file": "snapshot/en/api/atlas/reference__c8454d84c8e1.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neuroimage.2011.01.085&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__c8454d84c8e1.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neuroimage.2015.01.002": {
+   "file": "snapshot/en/api/atlas/reference__56eed02f899c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neuroimage.2015.01.002&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__56eed02f899c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neuroimage.2015.10.025": {
+   "file": "snapshot/en/api/atlas/reference__f45d24194d49.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neuroimage.2015.10.025&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__f45d24194d49.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neuroimage.2022.119321": {
+   "file": "snapshot/en/api/atlas/reference__abec6e9e4ea7.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.neuroimage.2022.119321&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__abec6e9e4ea7.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41467-021-26704-y": {
+   "file": "snapshot/en/api/atlas/reference__5293fcba34e3.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41467-021-26704-y&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__5293fcba34e3.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41540-024-00460-3": {
+   "file": "snapshot/en/api/atlas/reference__256253f95763.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41540-024-00460-3&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__256253f95763.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41551-023-01117-y": {
+   "file": "snapshot/en/api/atlas/reference__912220ae7e72.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41551-023-01117-y&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__912220ae7e72.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41598-017-03073-5": {
+   "file": "snapshot/en/api/atlas/reference__d574116bde90.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41598-017-03073-5&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__d574116bde90.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41598-018-33923-9": {
+   "file": "snapshot/en/api/atlas/reference__401137dc929f.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41598-018-33923-9&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__401137dc929f.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41598-022-07860-7": {
+   "file": "snapshot/en/api/atlas/reference__fea14faadb0e.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41598-022-07860-7&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__fea14faadb0e.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1073%2Fpnas.0811168106": {
+   "file": "snapshot/en/api/atlas/reference__8068ca8b21f9.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1073%2Fpnas.0811168106&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__8068ca8b21f9.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1088%2F2632-2153%2Fac9037": {
+   "file": "snapshot/en/api/atlas/reference__9980e6c5d9a5.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1088%2F2632-2153%2Fac9037&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__9980e6c5d9a5.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1088%2F2632-2153%2Fad6230": {
+   "file": "snapshot/en/api/atlas/reference__aa96089a0612.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1088%2F2632-2153%2Fad6230&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__aa96089a0612.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1101%2F2022.05.19.492664": {
+   "file": "snapshot/en/api/atlas/reference__207ceda77185.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1101%2F2022.05.19.492664&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__207ceda77185.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1109%2Faccess.2023.3302892": {
+   "file": "snapshot/en/api/atlas/reference__e50cd86e0f17.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1109%2Faccess.2023.3302892&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__e50cd86e0f17.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1126%2Fsciadv.abq7547": {
+   "file": "snapshot/en/api/atlas/reference__aab8bd0a1f98.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1126%2Fsciadv.abq7547&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__aab8bd0a1f98.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1137%2F20m1370082": {
+   "file": "snapshot/en/api/atlas/reference__3466f5a4a24b.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1137%2F20m1370082&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__3466f5a4a24b.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1152%2Fjn.00406.2019": {
+   "file": "snapshot/en/api/atlas/reference__a59207f18738.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1152%2Fjn.00406.2019&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__a59207f18738.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1162%2Fnetn_a_00348": {
+   "file": "snapshot/en/api/atlas/reference__3c39934a5ea1.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1162%2Fnetn_a_00348&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__3c39934a5ea1.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1186%2Fs13662-022-03733-5": {
+   "file": "snapshot/en/api/atlas/reference__bc662c32edc3.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1186%2Fs13662-022-03733-5&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__bc662c32edc3.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1186%2Fs40323-025-00291-9": {
+   "file": "snapshot/en/api/atlas/reference__77f681ba5554.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1186%2Fs40323-025-00291-9&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__77f681ba5554.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1371%2Fjournal.pcbi.1012647": {
+   "file": "snapshot/en/api/atlas/reference__355a34f34d37.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1371%2Fjournal.pcbi.1012647&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__355a34f34d37.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1371%2Fjournal.pone.0322983": {
+   "file": "snapshot/en/api/atlas/reference__588cdc8c11db.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1371%2Fjournal.pone.0322983&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__588cdc8c11db.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1523%2Feneuro.0283-21.2021": {
+   "file": "snapshot/en/api/atlas/reference__0cec8d5aa8b6.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.1523%2Feneuro.0283-21.2021&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__0cec8d5aa8b6.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.3389%2Ffams.2023.1128224": {
+   "file": "snapshot/en/api/atlas/reference__3899018a3bbb.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.3389%2Ffams.2023.1128224&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__3899018a3bbb.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.3389%2Ffphy.2022.1062554": {
+   "file": "snapshot/en/api/atlas/reference__4f5a97c294d0.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.3389%2Ffphy.2022.1062554&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__4f5a97c294d0.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.3390%2Fs23218665": {
+   "file": "snapshot/en/api/atlas/reference__7a81818ff94e.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.3390%2Fs23218665&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__7a81818ff94e.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.7554%2Felife.106194": {
+   "file": "snapshot/en/api/atlas/reference__f4b2a5f2fafa.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.7554%2Felife.106194&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__f4b2a5f2fafa.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.7554%2Felife.111817": {
+   "file": "snapshot/en/api/atlas/reference__98040438012d.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fdoi.org%2F10.7554%2Felife.111817&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__98040438012d.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fopenalex.org%2FW3103282891": {
+   "file": "snapshot/en/api/atlas/reference__714d709eca0b.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=https%3A%2F%2Fopenalex.org%2FW3103282891&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__714d709eca0b.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=local%3APosiblesPapers%2F1-s2.0-S1053811907006489-main.pdf": {
+   "file": "snapshot/en/api/atlas/reference__524a6718d92c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=local%3APosiblesPapers%2F1-s2.0-S1053811907006489-main.pdf&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__524a6718d92c.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=local%3APosiblesPapers%2F1-s2.0-S1053811913012135-main.pdf": {
+   "file": "snapshot/en/api/atlas/reference__72b4cab4e9e4.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/reference?id=local%3APosiblesPapers%2F1-s2.0-S1053811913012135-main.pdf&lang=es": {
+   "file": "snapshot/en/api/atlas/reference__72b4cab4e9e4.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/atlas/view": {
+   "file": "snapshot/en/api/atlas/view.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/atlas/view?lang=es": {
+   "file": "snapshot/en/api/atlas/view.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/candidates": {
+   "file": "snapshot/en/api/candidates.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/candidates?lang=es": {
+   "file": "snapshot/en/api/candidates.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/citations": {
+   "file": "snapshot/en/api/citations.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/citations?lang=es": {
+   "file": "snapshot/en/api/citations.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/experiments": {
+   "file": "snapshot/en/api/experiments.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/experiments?lang=es": {
+   "file": "snapshot/en/api/experiments.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/flow": {
+   "file": "snapshot/en/api/flow.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/flow?lang=es": {
+   "file": "snapshot/en/api/flow.html",
+   "type": "text/html",
+   "status": 200
+  },
+  "/api/journals": {
+   "file": "snapshot/en/api/journals.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/journals?lang=es": {
+   "file": "snapshot/en/api/journals.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/model": {
+   "file": "snapshot/en/api/model.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/model/math": {
+   "file": "snapshot/en/api/model/math.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/model/math?lang=es": {
+   "file": "snapshot/en/api/model/math.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/model/steps": {
+   "file": "snapshot/en/api/model/steps.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/model/steps?lang=es": {
+   "file": "snapshot/en/api/model/steps.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/model?lang=es": {
+   "file": "snapshot/es/api/model__0a4d7d9d82bd.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/novelty/status": {
+   "file": "snapshot/en/api/novelty/status.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/novelty/status?lang=es": {
+   "file": "snapshot/en/api/novelty/status.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/paper/qa": {
+   "file": "snapshot/en/api/paper/qa.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/paper/qa?lang=es": {
+   "file": "snapshot/en/api/paper/qa.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/pdf": {
+   "file": "snapshot/en/api/pdf.json",
+   "type": "application/json",
+   "status": 404
+  },
+  "/api/pdf/annotations": {
+   "file": "snapshot/en/api/pdf/annotations.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/pdf/annotations?lang=es": {
+   "file": "snapshot/en/api/pdf/annotations.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/pdf?lang=es": {
+   "file": "snapshot/en/api/pdf.json",
+   "type": "application/json",
+   "status": 404
+  },
+  "/api/section-translation?file=01-materials-and-methods.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__89dffa3b1b1a.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/section-translation?file=02-experimental-setup.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__90124568da6f.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/section-translation?file=03-results-and-discussion.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__62078028c72e.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/section-translation?file=04-limitations.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__4bf8814d069b.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/section-translation?file=05-related-work.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__9ae4580de6ff.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/section-translation?file=06-introduction.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__25c8f80062b5.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/section-translation?file=07-conclusions.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__c2b4c1be78c4.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/section-translation?file=08-abstract.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__0cf9643d8d0a.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/section-translation?file=09-title-and-keywords.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__532e030d5ee3.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/section-translation?file=10-back-matter.md&lang=es": {
+   "file": "snapshot/es/api/section-translation__5858c1cbabe0.txt",
+   "type": "text/plain",
+   "status": 200
+  },
+  "/api/status": {
+   "file": "snapshot/en/api/status.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/status?lang=es": {
+   "file": "snapshot/es/api/status__0a4d7d9d82bd.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/venues": {
+   "file": "snapshot/en/api/venues.json",
+   "type": "application/json",
+   "status": 200
+  },
+  "/api/venues?lang=es": {
+   "file": "snapshot/en/api/venues.json",
+   "type": "application/json",
+   "status": 200
+  }
+ }
+}

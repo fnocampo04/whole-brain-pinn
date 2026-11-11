@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Manuscript summary graph</title>
+<script>
+// The dashboard's theme, before first paint: ?theme= when opened alone; framed,
+// the dashboard also sets data-theme on this document whenever it changes.
+(function () {
+  const theme = new URLSearchParams(window.location.search).get('theme');
+  if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+<style>
+body { margin: 0; background: #0b0f19; color: #e2e8f0; font: 13px/1.4 system-ui, sans-serif; }
+.note { padding: 6px 12px; background: #3b2f0b; color: #facc15; }
+#wrap { position: relative; }
+#edges { position: absolute; inset: 0; pointer-events: none; }
+#cols { display: grid; grid-template-columns: repeat(8, minmax(150px, 1fr)); gap: 14px; padding: 12px; }
+.col h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #94a3b8; margin: 0 0 8px; }
+.node { position: relative; border: 1px solid var(--c); border-left-width: 4px; border-radius: 6px;
+  padding: 6px 8px; margin-bottom: 8px; background: #111827; cursor: pointer; }
+.node.sel { box-shadow: 0 0 0 2px var(--c); }
+.node--missing { border-style: dashed; opacity: .75; cursor: default; color: #94a3b8; }
+.phase { font-size: 11px; margin-top: 4px; }
+.tag { font-size: 10px; text-transform: uppercase; padding: 0 4px; border-radius: 3px; background: #1f2937; }
+.tag--supported { color: #10b981; } .tag--refuted { color: #f43f5e; } .tag--inconclusive { color: #facc15; }
+#detail { margin: 0 12px 12px; padding: 8px 10px; border: 1px solid #1f2937; border-radius: 6px; background: #111827; }
+#detail code { color: #93c5fd; }
+html[data-theme="light"] body { background: #f8fafc; color: #0f172a; }
+html[data-theme="light"] .note { background: #fef3c7; color: #92400e; }
+html[data-theme="light"] .col h2 { color: #475569; }
+html[data-theme="light"] .node, html[data-theme="light"] #detail { background: #ffffff; }
+html[data-theme="light"] #detail { border-color: #e2e8f0; }
+html[data-theme="light"] .node--missing { color: #64748b; }
+html[data-theme="light"] .tag { background: #e2e8f0; }
+html[data-theme="light"] .tag--inconclusive { color: #a16207; }
+html[data-theme="light"] #detail code { color: #1d4ed8; }
+</style></head><body>
+<div class="note" data-i18n="atlas.summaryView.stale">Inputs changed since this graph was written: rebuild it.</div><div id="wrap"><svg id="edges"></svg><div id="cols"><section class="col"><h2 data-i18n="atlas.summaryView.topic">Topic</h2><div class="node" tabindex="0" data-id="topic" style="--c:#38bdf8">Hybrid PINN estimation of MPR whole-brain model parameters from resting-state fMRI</div></section><section class="col"><h2 data-i18n="atlas.summaryView.problem">Problem and pillars</h2><div class="node" tabindex="0" data-id="problem" style="--c:#f43f5e">A good fit does not determine the parameters</div><div class="node" tabindex="0" data-id="pillar:P1" style="--c:#fb923c"><span class="tag" data-i18n="atlas.summaryView.pillar">pillar</span> Existence</div><div class="node" tabindex="0" data-id="pillar:P2" style="--c:#fb923c"><span class="tag" data-i18n="atlas.summaryView.pillar">pillar</span> Identifiability</div><div class="node" tabindex="0" data-id="pillar:P3" style="--c:#fb923c"><span class="tag" data-i18n="atlas.summaryView.pillar">pillar</span> Balanced physics loss</div></section><section class="col"><h2 data-i18n="atlas.summaryView.hypothesis">Hypotheses</h2><div class="node" tabindex="0" data-id="hypothesis:H1" style="--c:#facc15">There exist eta_i and G, obtained with the PINN, such that integrating the MPR model forward with them and passing the result through the Balloon-Windkessel model and the BOLD equation yields a functional connectivity (FC) that matches the real FC.</div><div class="node" tabindex="0" data-id="hypothesis:H2" style="--c:#facc15">The data determine the parameters: repeated training with different seeds and different initial values of eta_i and G converges to the same values.</div><div class="node" tabindex="0" data-id="hypothesis:H3" style="--c:#facc15">With synthetic data generated from known eta_i and G chosen away from the centre of the prior, the method recovers them.</div></section><section class="col"><h2 data-i18n="atlas.summaryView.sota">Main SOTA</h2><div class="node node--missing" data-id="sota:missing" style="--c:#fb7185"><span class="tag" data-i18n="atlas.summaryView.missing">missing</span> the manuscript cites no reference yet<div class="phase"><span data-i18n="atlas.summaryView.filledBy">filled by</span>: paper-writing (citations in paper/main.tex) over the plausibility atlas</div></div></section><section class="col"><h2 data-i18n="atlas.summaryView.math">Base and novelty math</h2><div class="node node--missing" data-id="base_concept:missing" style="--c:#94a3b8"><span class="tag" data-i18n="atlas.summaryView.missing">missing</span> no displayed equation in materials-and-methods.mm-borrowed-machinery (paper/main.tex does not exist yet)<div class="phase"><span data-i18n="atlas.summaryView.filledBy">filled by</span>: paper-writing (materials-and-methods.mm-borrowed-machinery)</div></div><div class="node" tabindex="0" data-id="novelty_concept:proposal-1" style="--c:#10b981"><span class="tag" data-i18n="atlas.summaryView.novelty_concept">novelty</span> (1) 3. Model</div><div class="node" tabindex="0" data-id="novelty_concept:proposal-2" style="--c:#10b981"><span class="tag" data-i18n="atlas.summaryView.novelty_concept">novelty</span> (2) 3. Model</div><div class="node" tabindex="0" data-id="novelty_concept:proposal-3" style="--c:#10b981"><span class="tag" data-i18n="atlas.summaryView.novelty_concept">novelty</span> (3) 3. Model</div><div class="node" tabindex="0" data-id="novelty_concept:proposal-4" style="--c:#10b981"><span class="tag" data-i18n="atlas.summaryView.novelty_concept">novelty</span> (4) 5. Loss function</div></section><section class="col"><h2 data-i18n="atlas.summaryView.experiment">Experiments</h2><div class="node node--missing" data-id="experiment:missing" style="--c:#a855f7"><span class="tag" data-i18n="atlas.summaryView.missing">missing</span> no experiments protocol and no fact experimental-design<div class="phase"><span data-i18n="atlas.summaryView.filledBy">filled by</span>: experimental-deliberation (experiments/experiments-*-vNN.md)</div></div></section><section class="col"><h2 data-i18n="atlas.summaryView.finding">Findings</h2><div class="node node--missing" data-id="finding:missing" style="--c:#22d3ee"><span class="tag" data-i18n="atlas.summaryView.missing">missing</span> no Results/discussion.json with hypotheses yet<div class="phase"><span data-i18n="atlas.summaryView.filledBy">filled by</span>: proposal-implementation / experimental-implementation (Results/discussion.json)</div></div></section><section class="col"><h2 data-i18n="atlas.summaryView.conclusion">Conclusions</h2><div class="node node--missing" data-id="conclusion:missing" style="--c:#e2e8f0"><span class="tag" data-i18n="atlas.summaryView.missing">missing</span> no conclusions.concl-block-* written and no discussion summary (paper/main.tex does not exist yet)<div class="phase"><span data-i18n="atlas.summaryView.filledBy">filled by</span>: paper-writing (conclusions.concl-block-*)</div></div></section></div></div>
+<div id="detail" data-i18n="atlas.summaryView.pick">Click a node to see its detail, source and paper blocks.</div>
+<script type="application/json" id="graph-data">{"nodes": [{"detail": "Resting-state functional connectivity; Physics-informed neural networks", "id": "topic", "label": "Hybrid PINN estimation of MPR whole-brain model parameters from resting-state fMRI", "paper_blocks": [], "source": {"locator": "topic", "path": "papersmith.yaml"}, "status": {"state": "present"}, "type": "topic"}, {"detail": "A parameter set that reproduces the data is not enough if the data do not determine it.", "id": "problem", "label": "A good fit does not determine the parameters", "paper_blocks": [], "source": {"locator": "planet p-problem (slot problem)", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.sky.json"}, "status": {"state": "present"}, "type": "problem"}, {"contribution": "p-c1", "detail": "Parameters obtained with the PINN, integrated forward through the hemodynamic model, yield an FC that matches the real FC.", "id": "pillar:P1", "label": "Existence", "paper_blocks": [], "source": {"locator": "pillars[0]", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.sky.json"}, "status": {"state": "present"}, "type": "pillar"}, {"contribution": "p-c2", "detail": "The data determine the parameters; otherwise they are not interpreted.", "id": "pillar:P2", "label": "Identifiability", "paper_blocks": [], "source": {"locator": "pillars[1]", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.sky.json"}, "status": {"state": "present"}, "type": "pillar"}, {"contribution": "p-c3", "detail": "The physics term is non-dimensionalised and scaled by fixed constants so that no term dominates by units alone.", "id": "pillar:P3", "label": "Balanced physics loss", "paper_blocks": [], "source": {"locator": "pillars[2]", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.sky.json"}, "status": {"state": "present"}, "type": "pillar"}, {"detail": "There exist eta_i and G, obtained with the PINN, such that integrating the MPR model forward with them and passing the result through the Balloon-Windkessel model and the BOLD equation yields a functional connectivity (FC) that matches the real FC.", "id": "hypothesis:H1", "label": "There exist eta_i and G, obtained with the PINN, such that integrating the MPR model forward with them and passing the result through the Balloon-Windkessel model and the BOLD equation yields a functional connectivity (FC) that matches the real FC.", "paper_blocks": [], "pillar": "P1", "source": {"locator": "hypotheses[0]", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.sky.json"}, "status": {"state": "present"}, "type": "hypothesis"}, {"detail": "The data determine the parameters: repeated training with different seeds and different initial values of eta_i and G converges to the same values.", "id": "hypothesis:H2", "label": "The data determine the parameters: repeated training with different seeds and different initial values of eta_i and G converges to the same values.", "paper_blocks": [], "pillar": "P2", "source": {"locator": "hypotheses[1]", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.sky.json"}, "status": {"state": "present"}, "type": "hypothesis"}, {"detail": "With synthetic data generated from known eta_i and G chosen away from the centre of the prior, the method recovers them.", "id": "hypothesis:H3", "label": "With synthetic data generated from known eta_i and G chosen away from the centre of the prior, the method recovers them.", "paper_blocks": [], "pillar": "P2", "source": {"locator": "hypotheses[2]", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.sky.json"}, "status": {"state": "present"}, "type": "hypothesis"}, {"detail": "", "id": "sota:missing", "label": "", "paper_blocks": [], "source": {"locator": "", "path": ""}, "status": {"phase": "paper-writing (citations in paper/main.tex) over the plausibility atlas", "reason": "the manuscript cites no reference yet", "state": "missing"}, "type": "sota"}, {"detail": "", "id": "base_concept:missing", "label": "", "paper_blocks": [], "source": {"locator": "", "path": ""}, "status": {"phase": "paper-writing (materials-and-methods.mm-borrowed-machinery)", "reason": "no displayed equation in materials-and-methods.mm-borrowed-machinery (paper/main.tex does not exist yet)", "state": "missing"}, "type": "base_concept"}, {"concept_kind": "equation", "detail": "\\tau_m \\dot r_i = \\frac{\\Delta}{\\pi \\tau_m} + 2 r_i V_i", "id": "novelty_concept:proposal-1", "label": "(1) 3. Model", "paper_blocks": [], "source": {"locator": "\\tag{1}", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.md"}, "status": {"state": "present"}, "type": "novelty_concept"}, {"concept_kind": "equation", "detail": "\\tau_m \\dot V_i = V_i^2 + \\eta_i - (\\pi \\tau_m r_i)^2 + \\tau_m J r_i + \\tau_m G \\sum_j A_{ij} r_j", "id": "novelty_concept:proposal-2", "label": "(2) 3. Model", "paper_blocks": [], "source": {"locator": "\\tag{2}", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.md"}, "status": {"state": "present"}, "type": "novelty_concept"}, {"concept_kind": "equation", "detail": "y_i = V_0\\left[k_1(1-q_i) + k_2\\left(1-\\frac{q_i}{\\nu_i}\\right) + k_3(1-\\nu_i)\\right]", "id": "novelty_concept:proposal-3", "label": "(3) 3. Model", "paper_blocks": [], "source": {"locator": "\\tag{3}", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.md"}, "status": {"state": "present"}, "type": "novelty_concept"}, {"concept_kind": "equation", "detail": "\\mathcal L = \\lambda_{\\mathrm{phys}} \\tilde{\\mathcal L}_{\\mathrm{phys}} + \\lambda_{\\mathrm{data}} \\tilde{\\mathcal L}_{\\mathrm{data}} + \\lambda_\\theta \\mathcal L_\\theta", "id": "novelty_concept:proposal-4", "label": "(4) 5. Loss function", "paper_blocks": [], "source": {"locator": "\\tag{4}", "path": "proposals/research-concept-parameter-estimation-of-a-whole-brain-model-with-a-hybrid-ph-r06.md"}, "status": {"state": "present"}, "type": "novelty_concept"}, {"detail": "", "id": "experiment:missing", "label": "", "paper_blocks": [], "source": {"locator": "", "path": ""}, "status": {"phase": "experimental-deliberation (experiments/experiments-*-vNN.md)", "reason": "no experiments protocol and no fact experimental-design", "state": "missing"}, "type": "experiment"}, {"detail": "", "id": "finding:missing", "label": "", "paper_blocks": [], "source": {"locator": "", "path": ""}, "status": {"phase": "proposal-implementation / experimental-implementation (Results/discussion.json)", "reason": "no Results/discussion.json with hypotheses yet", "state": "missing"}, "type": "finding"}, {"detail": "", "id": "conclusion:missing", "label": "", "paper_blocks": [], "source": {"locator": "", "path": ""}, "status": {"phase": "paper-writing (conclusions.concl-block-*)", "reason": "no conclusions.concl-block-* written and no discussion summary (paper/main.tex does not exist yet)", "state": "missing"}, "type": "conclusion"}], "edges": [{"from": "pillar:P1", "rel": "predicts", "to": "hypothesis:H1"}, {"from": "pillar:P2", "rel": "predicts", "to": "hypothesis:H2"}, {"from": "pillar:P2", "rel": "predicts", "to": "hypothesis:H3"}, {"from": "topic", "rel": "frames", "to": "problem"}, {"from": "problem", "rel": "decomposes_into", "to": "pillar:P1"}, {"from": "problem", "rel": "decomposes_into", "to": "pillar:P2"}, {"from": "problem", "rel": "decomposes_into", "to": "pillar:P3"}], "labels": {"source": "Source", "blocks": "Blocks", "missing": "missing", "filledBy": "filled by"}}</script>
+<script>
+(function () {
+  const data = JSON.parse(document.getElementById('graph-data').textContent);
+  const byId = new Map(data.nodes.map((n) => [n.id, n]));
+  const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const svg = document.getElementById('edges');
+  function draw() {
+    const box = document.getElementById('wrap').getBoundingClientRect();
+    svg.setAttribute('width', box.width); svg.setAttribute('height', box.height);
+    const parts = [];
+    for (const e of data.edges) {
+      const a = document.querySelector(`.node[data-id="${CSS.escape(e.from)}"]`);
+      const b = document.querySelector(`.node[data-id="${CSS.escape(e.to)}"]`);
+      if (!a || !b) continue;
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      const x1 = ra.right - box.left, y1 = ra.top + ra.height / 2 - box.top;
+      const x2 = rb.left - box.left, y2 = rb.top + rb.height / 2 - box.top;
+      const color = e.verdict === 'refuted' ? '#f43f5e' : (e.verdict === 'supported' ? '#10b981' : '#475569');
+      const mid = (x1 + x2) / 2;
+      parts.push(`<path d="M${x1},${y1} C${mid},${y1} ${mid},${y2} ${x2},${y2}" fill="none" stroke="${color}" stroke-width="1.2" opacity=".7"><title>${esc(e.rel)}</title></path>`);
+    }
+    svg.innerHTML = parts.join('');
+  }
+  function select(el) {
+    const node = byId.get(el.dataset.id);
+    if (!node || node.status.state !== 'present') return;
+    document.querySelectorAll('.node.sel').forEach((n) => n.classList.remove('sel'));
+    el.classList.add('sel');
+    const L = Object.assign({}, data.labels, window.MG_LABELS || {});
+    const blocks = (node.paper_blocks || []).map((b) => `<code>${esc(b)}</code>`).join(', ');
+    document.getElementById('detail').innerHTML = `<strong>${esc(node.label)}</strong>` +
+      (node.detail ? `<div>${esc(node.detail)}</div>` : '') +
+      `<div>${esc(L.source)}: <code>${esc(node.source.path)}</code> ${esc(node.source.locator)}</div>` +
+      (blocks ? `<div>${esc(L.blocks)}: ${blocks}</div>` : '');
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'atlas-planet-selected', key: node.id, label: node.label,
+        slot: node.type, system: { id: (node.paper_blocks || []).join(', '), title: node.source.path } }, '*');
+    }
+  }
+  document.querySelectorAll('.node').forEach((el) => {
+    el.addEventListener('click', () => select(el));
+    el.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') select(el); });
+  });
+  // The cited-papers view asks to show one paper's node.
+  window.addEventListener('message', (e) => {
+    if (e.source !== window.parent || !e.data || e.data.type !== 'manuscript-graph-locate') return;
+    const el = Array.from(document.querySelectorAll('.node')).find((n) => n.dataset.id === e.data.id);
+    if (!el) return;
+    select(el);
+    el.scrollIntoView({ block: 'center', inline: 'center' });
+  });
+  window.addEventListener('resize', draw);
+  window.addEventListener('wheel', (e) => {
+    if (window.parent !== window) window.parent.postMessage({ type: 'page_scroll', deltaY: e.deltaY }, '*');
+  }, { passive: true });
+  draw();
+})();
+</script></body></html>

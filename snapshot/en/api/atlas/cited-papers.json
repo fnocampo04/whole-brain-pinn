@@ -1,0 +1,1 @@
+{"schema": "papersmith.cited-papers/v1", "cite_source": "none", "papers": [], "summary": {"total": 0, "in_pool": 0, "with_link": 0, "with_abstract": 0, "missing_entries": []}, "clusters": {"method": "TF-IDF cosine with citation bonuses, kNN graph, Louvain modularity", "signals": [], "clusters": [], "unclustered": []}, "warnings": []}

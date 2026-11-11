@@ -1,0 +1,377 @@
+<!-- proposal-workspace:artifact:v1 -->
+# Parameter estimation of a whole-brain model with a hybrid physics-informed neural network
+
+## 1. Objective and scope
+
+We show that the regional excitabilities $\eta_i$ and the global coupling $G$ of a Montbrió–Pazó–Roxin (MPR) whole-brain model, estimated with a hybrid physics-informed neural network (PINN), reproduce the resting-state BOLD of a real subject and can be interpreted as properties of that brain. The claim is one of inference, which is stronger than a good fit: a parameter set that reproduces the data is not enough if the data do not determine it.
+
+Scope of version 1: one subject of a resting-state dataset, parcellated into $N$ regions, with $T$ volumes at repetition time TR. The method is written for any such instance; the instance of version 1 and every value that depends on it are given in Section 3.1, so changing the dataset or the subject changes only that subsection. Only $\eta_i$ and $G$ are estimated; every other parameter is fixed and declared. Using the estimated parameters to explore perturbations that could inform the treatment of disorders is future work and motivation, not a result of this proposal.
+
+Decisions that depend on forward simulations (the value of $G_0$ and the useful range of $G$, the check of the noise level, the scale $\chi$ of the Balloon input, heterogeneous $\eta_i$ in the generator, the scale of the physics residual of Eq. (2)) are not fixed here. They belong to the simulation stages of the project and are listed in Section 7.
+
+## 2. Hypotheses
+
+These hypotheses supersede the numbering of revision r01.
+
+- **H1 (existence).** There exist $\eta_i$ and $G$, obtained with the PINN, such that integrating the MPR model forward with them and passing the result through the Balloon–Windkessel model and the BOLD equation yields a functional connectivity (FC) that matches the real FC. Success is measured by $\rho_{\mathrm{FC}}$ against the ceilings of Section 6, not against the structural reference $\rho(\mathrm{SC},\mathrm{FC})$ of the instance (0.28 in the instance of Section 3.1), which is only a lower reference.
+- **H2 (identifiability on real data).** The data determine the parameters: repeated training with different seeds and different initial values of $\eta_i$ and $G$ converges to the same values. If runs reach different values with the same FC, the parameters are not identifiable and they are not interpreted.
+- **H3 (optional, recovery on synthetic data).** With synthetic data generated from known $\eta_i$ and $G$ chosen away from the centre of the prior, the method recovers them. This needs a forward simulation used only as a data generator.
+
+## 3. Model
+
+Each region $i$ carries one MPR neural mass, coupled through the structural connectome $A$ (fibre counts without diagonal, normalised to a maximum of 1), without delays in version 1:
+
+$$
+\tau_m \dot r_i = \frac{\Delta}{\pi \tau_m} + 2 r_i V_i \tag{1}
+$$
+
+$$
+\tau_m \dot V_i = V_i^2 + \eta_i - (\pi \tau_m r_i)^2 + \tau_m J r_i + \tau_m G \sum_j A_{ij} r_j \tag{2}
+$$
+
+with fixed $\Delta=0.7$ and $J=14.5$, taken from Rabuffo et al. (2021), who fit them so that an isolated region is bistable. The time constant is $\tau_m=1$ ms. Rabuffo et al. use a dimensionless characteristic time $\tau_c=1$ and an integration step of 1 ms ("2000 steps are 2 s"), so one unit of model time corresponds to 1 ms, and Hashemi et al. (2024) work with the same model and the same convention of regions switching between states. The value $\tau_m=1$ ms is therefore a declared assumption supported by that coherence, not a published measurement. A value of 10 ms is used as a sensitivity test. The initial value of $\eta_i$ is $-4.6$, the homogeneous value of Rabuffo et al., inside the bistable range $(-5.35,-2.45)$ that was computed here for $\Delta=0.7$ and $J=14.5$ and is not reported in that paper. $G_0$ is the inverse of the mean row sum of $A$, a unit of scale and not a value taken from the literature:
+
+$$
+G_0 = \frac{N}{\sum_{i=1}^{N}\sum_{j=1}^{N} A_{ij}} \tag{3}
+$$
+
+**Noise.** The PINN has no explicit noise term: the residual of Eq. (2) absorbs it. Forward simulations used as data generators and for the checks of Section 6 add a Gaussian noise $\xi_i$ of zero mean to the right side of Eq. (2), in the same position as Hashemi et al. (2024, Section 2.2, Eq. 1 and Figure S1):
+
+$$
+\tau_m \dot V_i = V_i^2 + \eta_i - (\pi \tau_m r_i)^2 + \tau_m J r_i + \tau_m G \sum_j A_{ij} r_j + \xi_i(t), \qquad \xi_i(t)\sim\mathcal N(0,\sigma_\xi^2) \tag{4}
+$$
+
+Hashemi et al. state $\xi(t)\sim\mathcal N(0,\sigma^2)$ with variance $\sigma^2=0.03$, written $\sigma_\xi^2$ here because $\sigma$ with a subscript denotes the standard deviation of the quantity it names, and report that, with this noise, the regions are in the bistable regime around $G=0.5$. This value is inherited, fixed and declared; it is not estimated, and the same value is used wherever the noise level enters, so the simulated and trained quantities are comparable. Three things are verified and three are not. Verified: the time step of the source model is 1 ms with $\tau_c=1$ (Rabuffo et al. 2021), the convention adopted here for $\tau_m$; the documentation of The Virtual Brain, the software of both papers, defines its additive noise parameter `nsig` as a standard deviation, not a variance; and its stochastic examples for this model use a stochastic Heun integrator. Not verified: whether Hashemi et al. passed $0.03$ to the software as a variance or as `nsig`, which differ by a factor of about 5.8 in amplitude ($\sqrt{0.03}\approx0.17$ against $0.03$ read as a standard deviation); the integrator and step they used; and how the integrator scales the noise with the step. Hashemi et al. also couple the regions diffusively, $G\sum_j SC_{ij}(r_j-r_i)$, whereas Eq. (2) couples through the additive current $G\sum_j A_{ij} r_j$; this difference is declared and not resolved. The sensitivity of the results to the noise is reported over a grid that covers both readings of $0.03$.
+
+The firing rate drives a Balloon–Windkessel model (Friston et al. 2000) through the input
+
+$$
+z_i = \chi\,(r_i - \bar r_i) \tag{5}
+$$
+
+where $\bar r_i$ is the time mean of $r_i$. Each region carries four hemodynamic states, each normalised to its value at rest: the vasodilatory signal $s_i$, the blood inflow $f_i$, the venous blood volume $\nu_i$ and the deoxyhaemoglobin content $q_i$ (Friston et al. 2000; Stephan et al. 2007, Eqs. 8 and 9; Zeidman et al. 2019, Eqs. 20 to 22):
+
+$$
+\dot s_i = z_i - \kappa s_i - \gamma (f_i - 1) \tag{6}
+$$
+
+$$
+\dot f_i = s_i \tag{7}
+$$
+
+$$
+\tau_h \dot \nu_i = f_i - \nu_i^{1/\alpha} \tag{8}
+$$
+
+$$
+\tau_h \dot q_i = f_i \frac{E(f_i)}{E_0} - \nu_i^{1/\alpha} \frac{q_i}{\nu_i} \tag{9}
+$$
+
+where $E(f)=1-(1-E_0)^{1/f}$ is the fraction of oxygen extracted from the inflowing blood, so that $E(1)=E_0$ is its value at rest. The symbol $s_i$ denotes this state only. Eqs. (8) and (9) contain $\nu_i^{1/\alpha}$, $q_i/\nu_i$ and $(1-E_0)^{1/f_i}$, which are defined only for positive $f_i$ and $\nu_i$, and while the network is far from a solution its output can drive $f_i$ below zero. The integration therefore advances $\ln f_i$, $\ln \nu_i$ and $\ln q_i$, with $\mathrm{d}\ln x/\mathrm{d}t=\dot x/x$, as the reference implementation SPM12 does (Zeidman et al. 2019, Appendix); this change of variables keeps the three states positive and leaves the model of Eqs. (6) to (9) unchanged.
+
+Its parameters are those of the reference implementation of dynamic causal modelling, SPM12 (`spm_fx_fmri.m`), which coincide with Zeidman et al. (2019, Table 3) where that table lists them: $\kappa=0.64$ s$^{-1}$, $\gamma=0.32$ s$^{-1}$, $\tau_h=2.00$ s, $\alpha=0.32$ and $E_0=0.4$. The value of $\gamma$ is taken from the code, because the table of Zeidman et al. does not list it. These are the defaults of an estimation tool, not measurements. The values of Friston et al. (2003, Table 1), $\kappa=0.65$ s$^{-1}$, $\gamma=0.41$ s$^{-1}$, $\tau_h=0.98$ s, $\alpha=0.32$ and $E_0=0.34$, which Heinzle et al. (2016) also use, are the sensitivity case. None of the sources read here gives the reason for the change from the second set to the first, so it is reported as undocumented. The effect of $\kappa$, $\gamma$, $\tau_h$ and $E_0$ is covered by a sensitivity analysis. The scale $\chi$ depends on the scale of $r$, which changes with $\tau_m$, and is set in the simulation stage.
+
+**Initial state.** The integration starts at $t=0$, the time of the first volume, at rest: $s_i(0)=0$ and $f_i(0)=\nu_i(0)=q_i(0)=1$. Rest is the fixed point of Eqs. (6) to (9) for $z_i=0$, and $z_i$ has zero mean by construction, so rest is the expected state when the activity before the first volume is not observed. No warm-up interval is simulated. The state of the real subject at $t=0$ depends on that unobserved activity, so the first volumes of the simulated BOLD carry a transient of the initial state. Linearised around rest with the parameters above, Eqs. (6) and (7) have the characteristic polynomial $\lambda^2+\kappa\lambda+\gamma=0$, with roots $\lambda\approx-0.32\pm0.47i$ s$^{-1}$; their slowest mode decays at the rate $\kappa/2=0.32$ s$^{-1}$, Eqs. (8) and (9) relax faster, and the transient falls below $1\%$ of its initial size within $15$ s. With the parameters of Friston et al. (2003) the rate is about $0.33$ s$^{-1}$. These figures are computed here and hold near rest only. The sensitivity of $\rho_{\mathrm{FC}}$ to the transient is tested by discarding the first $15$ s of both the simulated and the measured series.
+
+The BOLD signal is
+
+$$
+y_i = b_0\left[k_1(1-q_i) + k_2\left(1-\frac{q_i}{\nu_i}\right) + k_3(1-\nu_i)\right] \tag{10}
+$$
+
+with the coefficients of Stephan et al. (2007, Eq. B9) and Heinzle et al. (2016, Eq. 7),
+
+$$
+k_1 = 4.3\,\vartheta_0 E_0\,\mathrm{TE}, \qquad k_2 = \varepsilon\,\varrho_0 E_0\,\mathrm{TE}, \qquad k_3 = 1-\varepsilon, \qquad \varepsilon = e^{-(R^*_{2,I}-R^*_{2,E})\,\mathrm{TE}} \tag{11}
+$$
+
+The coefficients depend on the field strength $B_0$ and the echo time TE of the instance. Heinzle et al. (2016, Appendix A) give $\vartheta_0\approx 28.265\,B_0$ s$^{-1}$; $\varrho_0$, which Stephan et al. (2007) and Heinzle et al. (2016) write $r_0$ and which is renamed here because $r_i$ is the firing rate, is $\approx 15$ s$^{-1}$ at 1.5 T, $110$ s$^{-1}$ at 3 T and about $340$ s$^{-1}$ at 7 T; and $\varepsilon$ of Eq. (11), the ratio of intravascular to extravascular signal, with the relaxation rates $R^*_{2,I}$ and $R^*_{2,E}$ of their Table A1 for 1.5, 3 and 7 T. None of these depends on $E_0$. Heinzle et al. fix $E_0=0.34$ themselves, so the pairing of $E_0$ from SPM12 with their field coefficients is a combination made in this work. The ratio $\varepsilon$ is the least certain input: Obata et al. fixed 1.43 at 1.5 T, Buxton et al. assumed 0.4, and Stephan et al. (2007) propose to treat it as a free parameter with prior mean 1. Here $\varepsilon$ is fixed at the value given by the field and the TE of the instance. An instance acquired at a field strength that Heinzle et al. do not cover needs $\varrho_0$ and the relaxation rates from another source. The numerical values for the instance of version 1 are given in Section 3.1. The resting venous blood volume fraction is $b_0=0.02$ (Friston et al. 2003), which Friston et al. (2003) and Stephan et al. (2007) write $V_0$ and which is renamed here because $V_i$ is the membrane potential; it only scales the signal and does not affect a correlation. The sensitivity of the FC to the $k_i$ is tested.
+
+### 3.1 Data and instance of version 1
+
+The method takes a structural connectome $A$ and the regional BOLD series of one subject, parcellated into $N$ regions, with $T$ volumes at repetition time TR, acquired at field strength $B_0$ with echo time TE. The simulated BOLD is sampled at the same TR and receives exactly the same preprocessing as the measured series before the FC is computed; in particular, global signal regression is applied to the simulated BOLD if and only if the instance applied it to the measured series. Let $y_i[n]$, $n=1,\dots,T$, be the BOLD of region $i$ at $t=(n-1)\,\mathrm{TR}$ after that preprocessing, measured or simulated with Eq. (10). The FC of the pair $(i,j)$ is the Pearson correlation of the two series,
+
+$$
+\mathrm{FC}_{ij} = \frac{\sum_{n=1}^{T}(y_i[n]-\bar y_i)(y_j[n]-\bar y_j)}{\sqrt{\sum_{n=1}^{T}(y_i[n]-\bar y_i)^2}\,\sqrt{\sum_{n=1}^{T}(y_j[n]-\bar y_j)^2}} \tag{12}
+$$
+
+where $\bar y_i$ is the time mean of $y_i[n]$. The simulated and measured FC are compared directly over the $P=N(N-1)/2$ pairs $i<j$ of the upper triangle, by the Pearson correlation of their entries,
+
+$$
+\rho_{\mathrm{FC}} = \frac{\sum_{i<j}\left(\mathrm{FC}^{\mathrm{sim}}_{ij}-\overline{\mathrm{FC}}{}^{\mathrm{sim}}\right)\left(\mathrm{FC}^{\mathrm{real}}_{ij}-\overline{\mathrm{FC}}{}^{\mathrm{real}}\right)}{\sqrt{\sum_{i<j}\left(\mathrm{FC}^{\mathrm{sim}}_{ij}-\overline{\mathrm{FC}}{}^{\mathrm{sim}}\right)^2}\,\sqrt{\sum_{i<j}\left(\mathrm{FC}^{\mathrm{real}}_{ij}-\overline{\mathrm{FC}}{}^{\mathrm{real}}\right)^2}} \tag{13}
+$$
+
+where $\overline{\mathrm{FC}}$ is the mean of the entries over the $P$ pairs. The Fisher $z$ transformation is not applied; it is tested as a sensitivity analysis.
+
+**Instance of version 1.** One subject of 1000BRAINS v1.1 (Jung et al. 2023): Desikan–Killiany parcellation with $N=70$ regions, hence $P=2415$ pairs, and an EPI acquisition of 11 minutes with TR $=2.2$ s, hence $T=300$ volumes, on a 3 T Siemens Tim-TRIO with TE $=30$ ms (Caspers et al. 2014). The dataset FC is the Pearson correlation between the regional BOLD series after linear detrending and a nuisance regression that includes the global signal, so global signal regression is applied to the simulated BOLD as well. For 3 T and TE $=30$ ms, Heinzle et al. give $\vartheta_0\approx 84.8$ s$^{-1}$, $\varrho_0\approx 110$ s$^{-1}$ and $\varepsilon\approx 0.47$, which with $E_0=0.4$ yield $k_1\approx 4.38$, $k_2\approx 0.62$ and $k_3=0.53$; with $E_0=0.34$ the same inputs would give $3.72$, $0.53$ and $0.53$. These three numbers are computed here from published values; they are not published. 88 of the 261 subjects of the dataset have a second session; whether this subject is one of them has not been confirmed, and Section 6 states how the criteria read in each case.
+
+## 4. Method
+
+A single fully connected network with three hidden layers of 100 tanh units, Glorot initialisation, maps the scaled time to the dimensionless rate and the potential of every region,
+
+$$
+(\hat r_1^*,\dots,\hat r_N^*,\hat V_1,\dots,\hat V_N) = \mathrm{NN}_\varphi(\tilde t), \qquad \tilde t = \frac{2t}{(T-1)\,\mathrm{TR}} - 1, \qquad t\in\left[0,(T-1)\,\mathrm{TR}\right] \tag{14}
+$$
+
+where $\varphi$ are the network weights, the time domain runs from the first to the last volume, $\hat r_i^*=\tau_m\hat r_i$ is the dimensionless rate of Section 5, and a softplus on the outputs $\hat r_i^*$ keeps the rate positive. The depth and width follow the PINNs of Raissi et al. (2019, 4–5 layers of 50–200 units) and the PINN of resting-state dynamics of 2024 (three layers of 100 tanh units, Glorot); the output, with $2N$ variables, is the only difference. When $2N$ exceeds the width $W=100$ of the last hidden layer, as in the instance of version 1 ($2N=140$), the $2N$ trajectories are linear combinations of $W$ functions, which limits the patterns the network can represent. The effect of a wider layer is tested.
+
+The derivatives come from automatic differentiation. The network weights $\varphi$, $\eta$ and $G$ are trained jointly. The network output feeds a differentiable RK4 integration of the Balloon–Windkessel model, so that the BOLD and its FC can be compared with the data.
+
+**Parametrisation.** $\eta_i$ and $G$ are parametrised as dimensionless deviations in units of the standard deviations of the prior,
+
+$$
+\eta_i = -4.6 + \sigma_\eta\,\tilde\eta_i, \qquad G = G_0 + \sigma_G\,\tilde G \tag{15}
+$$
+
+so that a single learning rate means a comparable relative step for both.
+
+**Optimisation.** Adam with initial learning rate $10^{-3}$ and a stepwise decay, as in the PINN of Pinning the Balloon (2026; $10^{-3}$, decay factor 0.15 every 1000 iterations) and the PINN of resting-state dynamics (2024; $10^{-3}$, 40 000 iterations). A final polish with L-BFGS is optional. L-BFGS needs a fixed batch, so it runs on a single draw of the $K=4096$ collocation times of Section 5; Raissi et al. use it when the training set has hundreds to thousands of points, as here, and Rathore et al. (2024) report that Adam followed by L-BFGS outperforms either alone.
+
+**Stopping.** The number of iterations is fixed by a pilot run and declared; it is not chosen a priori. Training stops early when both the loss and the parameters $\eta_i$ and $G$ have stabilised, and the full trajectories of $\eta_i$, $G$ and the loss are recorded. A run that reaches the iteration cap, or whose loss plateaus while the parameters are still moving, is marked as not converged and is not interpreted. The thresholds of "stable" are set with the pilot run. Stopping on the loss alone would have accepted the first run (Section 7), where the loss stabilised while the parameters had not moved.
+
+Two-phase schedules and different learning rates for $\eta$ and $G$ are not adopted: they have no support in the references of this work, and are evaluated only if the pilot run shows that $\eta$ and $G$ do not move.
+
+## 5. Loss function
+
+The loss combines three terms:
+
+$$
+\mathcal L = \lambda_{\mathrm{phys}} \tilde{\mathcal L}_{\mathrm{phys}} + \lambda_{\mathrm{data}} \tilde{\mathcal L}_{\mathrm{data}} + \lambda_\theta \mathcal L_\theta \tag{16}
+$$
+
+Each term is dimensionless, and any scale it is divided by has a meaning defined by the problem, never a value taken from the current state of training. Dividing by the running value of another loss makes the weight collapse as the network improves, which is what happened in the first run.
+
+**Physics.** The equations are non-dimensionalised before the loss is built, which is the first step of the training pipeline of "An Expert's Guide to Training Physics-informed Neural Networks" (arXiv 2308.08468) and the scaling of Theodosiou and Rekatsinas (2025, Section 2.2). With $t^*=t/\tau_m$ and $r_i^*=\tau_m r_i$, and with $V_i$, $\eta_i$, $J$, $\Delta$ and $G$ already dimensionless, Eqs. (1) and (2) become
+
+$$
+\frac{dr_i^*}{dt^*} = \frac{\Delta}{\pi} + 2 r_i^* V_i \tag{17}
+$$
+$$
+\frac{dV_i}{dt^*} = V_i^2 + \eta_i - (\pi r_i^*)^2 + J r_i^* + G \sum_j A_{ij} r_j^* \tag{18}
+$$
+
+which is the form of Montbrió et al. (2015, Eq. 12), with $\tau_m$ as the only time scale. The change of variables was checked here symbolically and by integrating both forms for an isolated region, whose trajectories agree to the tolerance of the integrator. The residuals are the left side minus the right side of Eqs. (17) and (18) evaluated on the network output,
+
+$$
+\mathcal R_{1,i} = \frac{d\hat r_i^*}{dt^*} - \left(\frac{\Delta}{\pi} + 2\hat r_i^*\hat V_i\right), \qquad \mathcal R_{2,i} = \frac{d\hat V_i}{dt^*} - \left(\hat V_i^2 + \eta_i - (\pi \hat r_i^*)^2 + J\hat r_i^* + G\sum_j A_{ij}\hat r_j^*\right) \tag{19}
+$$
+
+where the derivatives come from automatic differentiation with respect to the network input, with $d/dt^* = \tau_m\,\frac{2}{(T-1)\,\mathrm{TR}}\,d/d\tilde t$ by Eq. (14). Each residual is divided by a fixed reference scale computed before training and never updated from the network output; a scale recomputed from the output would let the network lower the loss by inflating the terms. PINODE-SR (2025) takes this scale as the empirical standard deviation of the derivative of each observed variable, and Pinning the Balloon (2026) levels the residuals to the data term with a scalar weight; here only the BOLD is observed, so $r$ and $V$ have no data to compute such a statistic from. No source was found that fixes the scale of the residuals of a neural mass model with hidden states, so the scale is derived here: each residual is divided by the sum of the absolute values of the terms of its equation, and reads as a fraction of the size of the terms, not of the rate of change, which vanishes at a fixed point. This mirrors the backward error of a linear system, which divides the residual by the magnitude of the terms (Higham 2002, Chapter 7); its use in a PINN is an extension made in this work.
+
+For Eq. (17) the scale is exact and the same in both stable states, because its two terms balance at a fixed point. For Eq. (18), at the fixed points of an isolated region ($G=0$) with $\Delta=0.7$, $J=14.5$ and $\eta=-4.6$, the sum of the absolute values of its terms, $\mathcal R_2^{\mathrm{down}}$ and $\mathcal R_2^{\mathrm{up}}$, is about $9.3$ in the down state ($V\approx-1.95$, $r^*\approx0.057$) and about $29.3$ in the up state ($V\approx-0.11$, $r^*\approx1.01$); these values are computed here. Rabuffo et al. (2021) and Hashemi et al. (2024) do not report the fraction of time a region spends in each state, and it depends on $G$ and on the region, so the scale of region $i$ is the average of the two values weighted by the fraction $p_i$ of time that region spends in the down state at the working point, which is fixed in the simulation stage:
+
+$$
+\mathcal R_1^{\mathrm{ref}} = \frac{2\Delta}{\pi}, \qquad \mathcal R_{2,i}^{\mathrm{ref}} = p_i\,\mathcal R_2^{\mathrm{down}} + (1-p_i)\,\mathcal R_2^{\mathrm{up}}, \qquad \mathcal R_2^{\mathrm{down/up}} = \left[V^2 + |\eta| + (\pi r^*)^2 + J r^*\right]_{\mathrm{down/up}} \tag{20}
+$$
+
+In the dimensional form of Eq. (1) the residual and its scale both carry a factor $1/\tau_m$, so the normalised residual is the same in either form. The values $9.3$ and $29.3$ bound the sensitivity analysis. Choosing the larger instead of the smaller lowers the weight of Eq. (2) against Eq. (1) by a factor of about ten, which $\lambda_{\mathrm{phys}}$ cannot compensate because it multiplies both. Two limits are declared: the scales of an isolated region ignore the coupling term, which shifts the effective excitability, and the residual of Eq. (2) cannot reach zero because it absorbs the noise.
+
+The physics term averages the squared normalised residuals over the regions and over $K$ collocation times $t_k$ drawn uniformly in $[0,(T-1)\,\mathrm{TR}]$ anew at every Adam iteration, as recommended by the Expert's Guide (Section 6.2), which reports that a fixed set lets the network overfit the residuals:
+
+$$
+\tilde{\mathcal L}_{\mathrm{phys}} = \frac{1}{NK}\sum_{k=1}^{K}\sum_{i=1}^{N}\left[\left(\frac{\mathcal R_{1,i}(t_k)}{\mathcal R_1^{\mathrm{ref}}}\right)^2 + \left(\frac{\mathcal R_{2,i}(t_k)}{\mathcal R_{2,i}^{\mathrm{ref}}}\right)^2\right] \tag{21}
+$$
+
+with $K=4096$ times per iteration, the batch size of the Expert's Guide, and $K=1000$ as a sensitivity test.
+
+SEE-PINN is demonstrated only on one-dimensional problems of mechanics, and the Expert's Guide treats forward problems of partial differential equations; applying either to this coupled system of $2N$ variables with parameters to estimate is an extension made in this work.
+
+**Data.** The data term compares the pattern of the FC, not its level:
+
+$$
+\tilde{\mathcal L}_{\mathrm{data}} = 1 - \rho_{\mathrm{FC}} \tag{22}
+$$
+
+with $\rho_{\mathrm{FC}}$ of Eq. (13); it is dimensionless and lies in $[0,2]$. The level of the simulated FC depends on the scale $\chi$ and on the noise, which are not fixed yet (Section 1), so fitting the level could let $\eta_i$ compensate a mismatch that belongs to $\chi$; the success criterion of H1 is also $\rho_{\mathrm{FC}}$.
+**Prior.** Gaussian, with $\sigma_\eta=1$, $\sigma_G=0.5\,G_0$ and $\lambda_\theta=1$:
+
+$$
+\mathcal L_\theta = \sum_{i=1}^{N}\frac{(\eta_i+4.6)^2}{2\sigma_\eta^2} + \frac{(G-G_0)^2}{2\sigma_G^2} \tag{23}
+$$
+
+With the terms normalised, each $\lambda$ is chosen in $[0,1]$, and the proposal reports a sensitivity analysis over a grid of values. Deriving the weights from noise levels, as in Bayesian PINNs (Yang et al. 2021) and in uncertainty-based loss weighting (Kendall et al. 2018), is a later refinement: the physics weight would follow from the standard deviation $\sigma_\xi$ of the noise that the residual of Eq. (2) is read to represent, and the data weight from the natural variability of the FC. That choice is a design decision of this work, not an established practice for FC.
+
+**Alternative.** Adaptive weights, which change during training (weights from gradient norms or from the neural tangent kernel in the Expert's Guide; Gaussian-likelihood weights, among others reviewed by Theodosiou and Rekatsinas 2025), are not the main choice: they add hyperparameters and are harder to reproduce, as Theodosiou and Rekatsinas argue. They are kept as a declared alternative, to be used if a term is seen to dominate the loss during the pilot run. The gradient-norm scheme of the Expert's Guide is the first candidate.
+
+## 6. Success criteria and interpretability
+
+Version 1 asks that the simulated FC match the measured FC. The pointwise error between the simulated and measured BOLD is reported as a complementary metric of the network fit and is not a criterion of success: with a stochastic model, two simulations with identical parameters and different noise do not coincide pointwise, and spectral DCM (Friston et al. 2014; Novelli et al. 2024) fits second-order statistics for that reason.
+
+The FC also varies between simulations, so $\rho_{\mathrm{FC}}$ never reaches 1. It is read against two ceilings: the correlation between the FC of simulations with the same parameters and different seeds, and the correlation between the FC of two sessions of the same subject. The seed ceiling is always used. The session ceiling is used only when the instance provides a second session of the subject; otherwise $\rho_{\mathrm{FC}}$ is read against the seed ceiling alone. Section 3.1 states whether the subject of version 1 has one.
+
+The parameters are called interpretable when two conditions hold. First, they are stable across seeds and across the grid of $\lambda$ values. Second, the estimated $\eta_i$ lie inside the bistable range $(-5.35,-2.45)$. Relating the estimated $\eta_i$ to an independent property of the brain, such as the total connection strength of each region, is a next step.
+
+## 7. Limitations and open problems
+
+- The static FC constrains the parameters only weakly, and models with regional parameters on a connectome are known to produce non-unique solutions (Xie et al. 2018). The power spectrum and the dynamic FC are future work.
+- First run: $\mathcal L_{\mathrm{data}}$ fell from 0.995 to 0.28 ($\rho_{\mathrm{FC}}\approx0.72$) while $\eta$ moved about $5\cdot10^{-5}$ and $G$ about $5\cdot10^{-6}$, so the fit was made by the network and not by the parameters.
+- Direct stochastic simulation (Heun, step 0.1 ms, additive noise on $V$) with homogeneous $\eta=-4.6$ gave $\rho\approx0.03$–$0.045$ over a sweep of $G$. That run used $\tau_m=10$ ms and a noise level not tied to the value of this proposal, so it does not test the present configuration. Between 6.7 and 6.8 times $G_0$ all regions jump together, which global signal regression may remove; this is unconfirmed and requires plotting $r_i(t)$.
+- Deferred to the simulation stages: the value of $G_0$ and the useful range of $G$; the check, at $\sigma_\xi^2=0.03$ and $\tau_m=1$ ms, that regions switch between states; the convention of the noise level (variance or standard deviation) and the integrator; the scale $\chi$; heterogeneous $\eta_i$ in the generator; and the fraction of time each region spends in each state, which fixes the scale $\mathcal R_{2,i}^{\mathrm{ref}}$ of Eq. (2) (Section 5); and the size of the transient of the initial state away from rest (Section 3).
+- The architecture is the reference of the cited PINNs, not tuned to this problem; the bottleneck of $W=100$ hidden units against $2N$ outputs, when $2N>W$, is a declared limit.
+- The network represents the slow component of a dynamics whose time scale is $\tau_m$. Multilayer perceptrons learn low frequencies first, the spectral bias described in the Expert's Guide (Section 4.2 and Appendix A), and by Eq. (14) the derivative in Eq. (19) is $d/dt^*\approx3.0\times10^{-6}\,d/d\tilde t$ for $\tau_m=1$ ms and the instance of version 1. For a network whose derivatives with respect to $\tilde t$ are of order 1 to 100, the derivative term of Eq. (19) is negligible, and the physics loss pushes the network toward a fixed point of Eqs. (17) and (18) at every time: a sequence of slowly moving equilibria rather than the millisecond dynamics. This is an estimate made here, to be checked in the pilot run; random Fourier features (Expert's Guide, Section 4.2) are the first alternative if the pilot shows that the network does not capture the dynamics.
+- Implementation details: centre the simulated BOLD before global signal regression; use an unbiased standard deviation or `torch.corrcoef` in the FC; create $\eta$ and $G$ in the same cell as the optimiser. The dataset descriptor states that its FC is a Pearson correlation and mentions no Fisher $z$ transformation.
+- Future versions add delays $D_{ij}/c$ and diagnostics with a shuffled connectome and several seeds. About 85% of the time per epoch (about 20 s) is the sequential Balloon loop, which a GPU does not accelerate.
+
+## Paper Guide Reference
+
+### guidance/paper-guide/idea-central.md
+
+# Idea central (pre-proposal)
+
+Neural mass models of the MPR type (Montbrio-Pazo-Roxin), coupled through the structural
+connectome, can reproduce whole-brain fMRI signals. Hypothesis: parameters can be found
+that generate the exact population dynamics on the connectome and fit fMRI data.
+
+Sketches: DiagramaPT1.png (architecture), DiagramaPT2.png (loss), DiagramaPT3.png (notation).
+
+## Pipeline (from the sketches)
+- PINN: input t -> outputs r_i(t) (rate) and v_i(t) (voltage) for N regions; weights w.
+- Autodiff gives dr/dt, dv/dt, substituted into the MPR equations:
+  - tau_m r_i' = Delta/(pi tau_m) + 2 r_i v_i
+  - tau_m v_i' = v_i^2 + eta_i - (pi tau_m r_i)^2 + tau_m J r_i + tau_m G sum_j C_ij r_j(t - D_ij/v)
+  - C_ij = A_ij (.) W_ij, or C_ij = A_ij
+- Hemodynamic integrator (balloon): s' = r - kappa s - gamma(f-1); f' = s; tau_h v' = f - v^(1/alpha);
+  tau_h q' = f E(f)/E0 - v^(1/alpha) q/v; E(f) = 1-(1-E0)^(1/f). Rest: s=0, f=v=q=1.
+- BOLD: y_i = V0[k1(1-q) + k2(1-q/v) + k3(1-v)], k1=4.3 nu0 E0 TE, k2=eps r0 E0 TE, k3=1-eps.
+- Y_hat (N x K) -> FC_sim = Corr(rows i, j), N x N.
+
+## Parameters
+- theta_F = [eta_i, Delta, J, tau_m]; theta_G = [kappa, gamma, alpha, E0, V0, eps]; theta = [theta_F, theta_G].
+
+## Loss
+- Residuals R_r, R_v = LHS - RHS of the MPR equations, at collocation times t_1..t_K.
+- L_fisica = 1/(NK) sum_k sum_i [lambda_r R_r^2 + lambda_v R_v^2]
+- L_theta = sum_p (theta_p - mu_p)^2 / (2 sigma_p^2) (Gaussian prior; log-normal if positive)
+- L_datos = 1 - rho, rho = Corr(a, b), a/b = upper triangle (i<j) of FC_sim / FC_real
+  (diagonal is trivial; lower triangle repeats the upper). Compares pattern, not level.
+- L = lambda_fisica L_fisica + lambda_datos L_datos + lambda_theta L_theta
+- Joint gradient descent on w and theta; repeat.
+
+## Notation (DiagramaPT3)
+N regions i=1..N; collocation times K={t_1..t_K}; A connectome; D fibre lengths; tau_ij = D_ij / v.
+
+## Agreed notation (supersedes the sketch symbols)
+| Object | Symbol |
+| --- | --- |
+| Firing rate | $r_i$ (network output: $\hat r_i$) |
+| Membrane potential | $V_i$ (network output: $\hat V_i$) |
+| Blood volume | $\nu_i$ |
+| Conduction velocity | $c$ |
+| Balloon input scale | $\chi$ |
+| Network weights | $\varphi$ |
+| Measured connectome | $A_{ij}$ (diagonal 0, max-normalised; for now) |
+| Connectome correction | $\omega_{ij}$ (not used; $W_{ij}$ reserved) |
+| Intravascular relaxation | $\varrho_0$ |
+| FC correlation | $\rho_{\text{FC}}$ |
+| Learning rate | $\mathrm{lr}$ |
+| Grubb exponent | $\alpha$ |
+| Balloon input | $z_i = \chi(r_i - \bar r_i)$ |
+| Baseline rate | $\bar r_i$ (time mean of region $i$) |
+
+Collisions resolved by the notation:
+| Before | Problem | Now |
+| --- | --- | --- |
+| $W$ for network weights and for the connectome matrix | two objects, one letter | network weights $\varphi$; the connectome is $A_{ij}$ |
+| $v_i$ for voltage, blood volume and fibre velocity | three objects, one letter | voltage $V_i$, volume $\nu_i$, velocity $c$ |
+| $\alpha$ for learning rate and Grubb exponent | two objects, one letter | learning rate $\mathrm{lr}$; $\alpha$ stays the Grubb exponent |
+| $r_0$ in BOLD | clashes with rate $r_i$ | $\varrho_0$ |
+| $\rho$ for FC correlation | clashes with $\varrho_0$ | $\rho_{\text{FC}}$ |
+
+Network weights are $\varphi$ (the sketch's $w$ and $\psi$ are superseded).
+
+Consequences to carry into the document (to confirm):
+- $\tau_{ij} = D_{ij}/c$ (single $c$, no index); delayed coupling uses $r_j(t - D_{ij}/c)$.
+- Coupling uses $A_{ij}$ directly (measured connectome only, no correction). $\omega_{ij}$ is dropped for now; $W_{ij}$ is not used.
+- The sketch's $w$ (network weights) becomes $\varphi$; $\alpha$ is no longer the learning rate.
+- $\varrho_0$ replaces $r_0$ in $k_2 = \varepsilon \varrho_0 E_0 TE$.
+- Balloon input is $z_i(t) = \chi\,(\hat r_i(t) - \bar r_i)$ with $\bar r_i$ the time mean of region $i$'s rate
+  (per implementation summary, `implementation-v1-summary.md`). Then $\dot s_i = z_i - \kappa s_i - \gamma(f_i - 1)$.
+  Without the shift the Balloon rest is displaced: $f^* = 1 + \bar r/\gamma$. $\chi$ is fixed (0.1 in training).
+- The sketch's $v$ (voltage) is now $V$, and the hemodynamic volume is $\nu$, so the three uses of $v$ are resolved.
+
+## Open points
+- No MPR source paper ingested yet; Montbrio-Pazo-Roxin 2015 is missing from guidance/reference-papers.
+- Implementation summary in `implementation-v1-summary.md` (hypotheses H1-H3, v1 without delays, direct-simulation validation stuck at rho ~ 0).
+
+### guidance/paper-guide/implementation-v1-summary.md
+
+# Hybrid PINN for neural-mass parameter estimation (v1) — summary from the implementation session
+
+Pasted from the other session; kept in Spanish as received.
+
+## 1. Objetivo
+Estimar parámetros de un modelo de cerebro completo para que el BOLD simulado reproduzca la FC en reposo de un sujeto real.
+Piezas: conectoma estructural (dMRI), masa neuronal MPR por región, modelo hemodinámico. Problema inverso resuelto con una PINN (PyTorch).
+
+Hipótesis:
+- H1: la FC simulada se parece a la FC real más de lo que se parece el conectoma estructural solo.
+- H2: con datos sintéticos de parámetros conocidos, el método los recupera.
+- H3: simular la MPR directamente con los parámetros estimados, sin la red, reproduce la FC real.
+
+## 2. Datos
+- 1000BRAINS v1.1, atlas Desikan-Killiany, N = 70, un sujeto.
+- S: conectividad estructural N×N; D: longitudes de fibra en mm (no se usa en v1); FC: Pearson empírica; bold: 300 volúmenes.
+- TR = 2.2 s, TE = 30 ms, 3 T.
+- Preproceso del dataset: regresión de molestias con GSR, pasa-altas, detrend lineal, sin pasa-banda. Al BOLD simulado también se le aplica GSR.
+- Conectoma usado: A = S con diagonal 0 (la autoexcitación ya está en J), normalizado a máximo 1.
+
+## 3. MPR sin retardos (t en s, tau_m = 10 ms)
+- tau_m dr_i/dt = Delta/(pi tau_m) + 2 r_i V_i
+- tau_m dV_i/dt = V_i^2 + eta_i - (pi tau_m r_i)^2 + tau_m J r_i + tau_m G sum_j A_ij r_j
+
+| Parámetro | v1 |
+| --- | --- |
+| Delta | 0.7 fijo (Rabuffo) |
+| J | 14.5 fijo (Rabuffo) |
+| tau_m | 0.01 s fijo |
+| eta_i | uno por región, se estima; inicio -4.6 (rango biestable -5.35..-2.45) |
+| G | acople global, se estima |
+| Retardos | ninguno en v1; luego D_ij/c, c = 4 m/s |
+
+- G0 = 1/(suma media por fila de A).
+- Equilibrios de región aislada con eta = -4.6: bajo ≈ 5.7 Hz, frontera inestable ≈ 45 Hz, alto ≈ 101 Hz.
+
+## 4. Hemodinámica
+- Balloon-Windkessel (Friston 2000): s, f, nu, q; kappa 0.65, gamma 0.41, tau_h 0.98, alpha 0.32, E0 0.34.
+- Entrada: z_i = chi (r_i - rbar_i), con rbar_i = promedio en el tiempo de la región i. Con r crudo el reposo se corre: f* = 1 + rbar/gamma.
+- chi fija, 0.1 en entrenamiento (std de z ~ 0.1; si z es grande, f < 0 y explota).
+- BOLD: Stephan 2007 ec. 12, V0 = 4, eps = 0.47, vartheta0 = 84.8, varrho0 = 110, TE = 0.03.
+- RK4 a mano en PyTorch, diferenciable, sin in-place; dt_h = 0.2 s; reposo inicial s=0, f=nu=q=1; BOLD cada TR. Validado contra scipy.
+
+## 5. PINN
+- Una red para todas las regiones: t -> 2N = 140 salidas (r_1..r_N, V_1..V_N).
+- 2 capas ocultas de 512, tanh; t escalado a [-1, 1].
+- r pasa por softplus; V libre. Derivadas por autodiff respecto a t.
+- Entrenables: pesos (varphi), eta (N), G; Adam lr 1e-3; G recortado a >= 0.
+
+## 6. Pérdida
+L = lambda_fis L_fis + lambda_datos L_datos + lambda_theta L_theta
+
+- L_fis: K = 1000 instantes aleatorios por época; R_r = tau_m dr/dt - (Delta/(pi tau_m) + 2 r V); R_V = tau_m dV/dt - (V^2 + eta - (pi tau_m r)^2 + tau_m J r + tau_m G sum_j A_ij r_j);
+  L_fis = 1/(NK) sum_k sum_i [lambda_rv R_r^2 + (1 - lambda_rv) R_V^2], lambda_rv = 0.5.
+  R_r está en Hz y pesa más que R_V; balance pendiente. R_V no debería llegar a 0 (absorbe el ruido).
+- L_datos: red en malla regular -> z -> Balloon (RK4) -> BOLD en TR -> GSR -> FC sim (Pearson); comparada con FC real en 2415 pares del triángulo superior:
+  L_datos = MSE(FC_sim, FC_real) + (1 - rho_FC). No se compara el BOLD punto a punto (actividad espontánea, unidades distintas).
+- L_theta: eta_i ~ N(-4.6, 1^2); G ~ N(G0, (0.5 G0)^2); lambda_theta = 1.
+- lambda_datos = 1; lambda_fis = L_datos/L_fis recalculado cada 10 épocas (medido solo en época 0, la física dejó de pesar). Alternativa con fundamento pendiente: lambda_fis = N T / (2 sigma^2).
+- Parada: hasta 1000 épocas; cada 50 se revisa eta (< 0.01), G (< 1 %), mejora de L_datos (< 0.005); se detiene ante nan.
+
+## 7. Resultados
+- Primera corrida (100 épocas, lambda_fis fijado en época 0): L_datos 0.995 -> 0.28 (rho_FC ≈ 0.72); L_fis 258 -> 0.41; peso de la física ~1 -> ~0.0016.
+- eta cambió ~5e-5 y G ~5e-6: el ajuste lo hizo la red, no los parámetros. La red compensa cualquier eta ajustando V, así que el gradiente de eta no tiene dirección consistente. Para que los parámetros se muevan, la física debe pesar en serio.
+- Cambios posteriores: lambda_fis recalculado cada 10 épocas; término MSE en L_datos.
+
+## 8. Validación directa (H3)
+- MPR sin la red, con eta y G aprendidos, ruido aditivo en V (sigma = 0.5, provisional), paso 0.5 ms; mismo Balloon, BOLD, GSR, FC; chi recalculado para la r simulada.
+- Resultado: FC plana, rho ≈ 0.
+- Barrido de G (eta = -4.6, sigma = 0.5): rho ≈ 0 de 0 a 6 G0 (0.033 en 6 G0, 0.035 en 6.5 G0); FC media = -0.014 ≈ -1/(N-1) (lo que da la GSR con señales independientes); fracción en estado alto = 0 (todo en ~5.7 Hz temblando por ruido); desde 7 G0 explota.
+- Diagnóstico: la FC en reposo de la MPR aparece cuando las regiones saltan entre estado bajo y alto y los saltos se propagan por el conectoma (cascadas, Rabuffo). Con estos sigma y G no hay saltos. La explosión en 7 G0 es numérica: hubs en estado alto con oscilaciones rápidas que Euler no resuelve (ni con 0.05 ms). Euler a 0.5 ms sacaba artificialmente regiones del estado alto.
+- Solo en la validación se cambió a Heun estocástico, paso 0.1 ms (estable). El entrenamiento no se tocó: la MPR solo aparece en los residuos.
+- Pendiente: barrido con Heun en 6.5-10 G0 buscando saltos y rho > 0.
+
+## 9. Pendientes
+- Calibrar sigma y G0 con el barrido directo; luego lambda_fis = N T / (2 sigma^2); obtener chi desde la simulación directa.
+- Entrenar en dos fases (solo L_fis, luego L_datos); lr propio mayor (1e-2) para eta y G; considerar L-BFGS en la fase de física.
+- H2 con datos sintéticos (identificabilidad); conectoma barajado, varias semillas, sensibilidad al uso de la desviación como entrada del Balloon; retardos (D, c = 4 m/s) después.
+- Implementación: crear eta y G en la misma celda que el optimizador; si la malla empieza en t = -20 s, desplazar índices del TR; confirmar que la FC del archivo está en [-1, 1] sin Fisher-z.
+- Rendimiento: ~85 % del tiempo es el bucle secuencial del Balloon; dt_h = 0.2 s ayudó; otra opción: calcular L_datos cada pocas épocas.

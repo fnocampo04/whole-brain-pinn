@@ -1,0 +1,235 @@
+<!-- proposal-workspace:artifact:v1 -->
+# Parameter estimation of a whole-brain model with a hybrid physics-informed neural network
+
+## 1. Objective and scope
+
+We show that the regional excitabilities $\eta_i$ and the global coupling $G$ of a Montbrió–Pazó–Roxin (MPR) whole-brain model, estimated with a hybrid physics-informed neural network (PINN), reproduce the resting-state BOLD of a real subject and can be interpreted as properties of that brain. The claim is one of inference, which is stronger than a good fit: a parameter set that reproduces the data is not enough if the data do not determine it.
+
+Scope of version 1: one subject of 1000BRAINS v1.1, Desikan–Killiany atlas with $N=70$ regions, $T=300$ volumes at TR $=2.2$ s (Section 3.1). Only $\eta_i$ and $G$ are estimated; every other parameter is fixed and declared. Using the estimated parameters to explore perturbations that could inform the treatment of disorders is future work and motivation, not a result of this proposal.
+
+Decisions that depend on forward simulations (the value of $G_0$ and the useful range of $G$, the check of the noise level, the scale $\chi$ of the Balloon input, heterogeneous $\eta_i$ in the generator) are not fixed here. They belong to the simulation stages of the project and are listed in Section 7.
+
+## 2. Hypotheses
+
+These hypotheses supersede the numbering of revision r01.
+
+- **H1 (existence).** There exist $\eta_i$ and $G$, obtained with the PINN, such that integrating the MPR model forward with them and passing the result through the Balloon–Windkessel model and the BOLD equation yields a functional connectivity (FC) that matches the real FC. Success is measured by $\rho_{\mathrm{FC}}$ against the ceilings of Section 6, not against the structural reference $\rho(\mathrm{SC},\mathrm{FC})=0.28$, which is only a lower reference.
+- **H2 (identifiability on real data).** The data determine the parameters: repeated training with different seeds and different initial values of $\eta_i$ and $G$ converges to the same values. If runs reach different values with the same FC, the parameters are not identifiable and they are not interpreted.
+- **H3 (optional, recovery on synthetic data).** With synthetic data generated from known $\eta_i$ and $G$ chosen away from the centre of the prior, the method recovers them. This needs a forward simulation used only as a data generator.
+
+## 3. Model
+
+Each region $i$ carries one MPR neural mass, coupled through the structural connectome $A$ (fibre counts without diagonal, normalised to a maximum of 1), without delays in version 1:
+
+$$
+\tau_m \dot r_i = \frac{\Delta}{\pi \tau_m} + 2 r_i V_i \tag{1}
+$$
+
+$$
+\tau_m \dot V_i = V_i^2 + \eta_i - (\pi \tau_m r_i)^2 + \tau_m J r_i + \tau_m G \sum_j A_{ij} r_j \tag{2}
+$$
+
+with fixed $\Delta=0.7$, $J=14.5$, $\tau_m=0.01$ s. The initial value of $\eta_i$ is $-4.6$, inside the bistable range $(-5.35,-2.45)$, and $G_0$ is the inverse of the mean row sum of $A$, a unit of scale and not a value taken from the literature.
+
+The firing rate drives a Balloon–Windkessel model (Friston 2000; $\kappa=0.65$, $\gamma=0.41$, $\tau_h=0.98$, $\alpha=0.32$, $E_0=0.34$) through $z_i=\chi(r_i-\bar r_i)$ with $\chi=0.1$, and the BOLD equation of Stephan 2007 with the 3 T constants of Heinzle 2016. The simulated BOLD receives global signal regression, because the dataset was preprocessed with it.
+
+## 4. Method
+
+A single network with two hidden layers of 512 tanh units maps time $t$ to $(\hat r_1,\dots,\hat r_N,\hat V_1,\dots,\hat V_N)$. The derivatives come from automatic differentiation, and the network weights $\varphi$, $\eta$ and $G$ are trained jointly with Adam. The network output feeds a differentiable RK4 integration of the Balloon–Windkessel model, so that the BOLD and its FC can be compared with the data.
+
+## 5. Loss function
+
+The loss combines three terms:
+
+$$
+\mathcal L = \lambda_{\mathrm{phys}} \tilde{\mathcal L}_{\mathrm{phys}} + \lambda_{\mathrm{data}} \tilde{\mathcal L}_{\mathrm{data}} + \lambda_\theta \mathcal L_\theta \tag{3}
+$$
+
+Each term is divided by a fixed scale with a meaning defined by the problem, never by a value taken from the current state of training. Dividing by the running value of another loss makes the weight collapse as the network improves, which is what happened in the first run.
+
+- **Physics.** The residual of Eqs. (1) and (2) at $K=1000$ random instants, divided by the characteristic magnitude of the terms of the equations, so that it reads as a fraction of the size of the dynamics. The exact scale must be derived and has not been computed yet.
+- **Data.** The squared error between simulated and real FC over the 2415 upper-triangle pairs, divided by the variance of the real FC entries, which is the error of the constant predictor equal to the mean. It reads as the fraction of the FC variance left unexplained. The term $1-\rho_{\mathrm{FC}}$ is already dimensionless.
+- **Prior.** Gaussian, $\sum_i (\eta_i+4.6)^2/(2 s_\eta^2) + (G-G_0)^2/(2 s_G^2)$ with $s_\eta=1$ and $s_G=0.5\,G_0$, with $\lambda_\theta=1$.
+
+With the terms normalised, each $\lambda$ is chosen in $[0,1]$, and the proposal reports a sensitivity analysis over a grid of values. Deriving the weights from noise levels, as in Bayesian PINNs (Yang et al. 2021) and in uncertainty-based loss weighting (Kendall et al. 2018), is a later refinement: the physics weight would follow from the intensity $\sigma$ of the noise that the residual of Eq. (2) is read to represent, and the data weight from the natural variability of the FC. That choice is a design decision of this work, not an established practice for FC.
+
+## 6. Success criteria and interpretability
+
+Version 1 asks that the simulated FC match the measured FC. The pointwise error between the simulated and measured BOLD is reported as a complementary metric of the network fit and is not a criterion of success: with a stochastic model, two simulations with identical parameters and different noise do not coincide pointwise, and spectral DCM (Friston et al. 2014; Novelli et al. 2024) fits second-order statistics for that reason.
+
+The FC also varies between simulations, so $\rho_{\mathrm{FC}}$ never reaches 1. It is read against two ceilings: the correlation between the FC of simulations with the same parameters and different seeds, and, if the subject has a second session, the correlation between the FC of both sessions. The existence of a second session for this subject has not been confirmed.
+
+The parameters are called interpretable when two conditions hold. First, they are stable across seeds and across the grid of $\lambda$ values. Second, the estimated $\eta_i$ lie inside the bistable range $(-5.35,-2.45)$. Relating the estimated $\eta_i$ to an independent property of the brain, such as the total connection strength of each region, is a next step.
+
+## 7. Limitations and open problems
+
+- The static FC constrains the parameters only weakly, and models with regional parameters on a connectome are known to produce non-unique solutions (Xie et al. 2018). The power spectrum and the dynamic FC are future work.
+- First run: $\mathcal L_{\mathrm{data}}$ fell from 0.995 to 0.28 ($\rho_{\mathrm{FC}}\approx0.72$) while $\eta$ moved about $5\cdot10^{-5}$ and $G$ about $5\cdot10^{-6}$, so the fit was made by the network and not by the parameters.
+- Direct stochastic simulation (Heun, step 0.1 ms, additive noise on $V$) with homogeneous $\eta=-4.6$ gave $\rho\approx0.03$–$0.045$ over a sweep of $G$. Between 6.7 and 6.8 times $G_0$ all regions jump together, which global signal regression may remove; this is unconfirmed and requires plotting $r_i(t)$.
+- Pending decisions: calibrating $\sigma$, the initial $G$ and $\chi$ from the forward simulation; a two-phase schedule; larger learning rates for $\eta$ and $G$; heterogeneous $\eta$ in the generator.
+- Implementation details: centre the simulated BOLD before global signal regression; use an unbiased standard deviation or `torch.corrcoef` in the FC; create $\eta$ and $G$ in the same cell as the optimiser; shift the TR indices if the grid starts at $t=-20$ s; confirm that the FC file is not Fisher-z transformed.
+- Future versions add delays $D_{ij}/c$ and diagnostics with a shuffled connectome and several seeds. About 85% of the time per epoch (about 20 s) is the sequential Balloon loop, which a GPU does not accelerate.
+
+## Paper Guide Reference
+
+### guidance/paper-guide/idea-central.md
+
+# Idea central (pre-proposal)
+
+Neural mass models of the MPR type (Montbrio-Pazo-Roxin), coupled through the structural
+connectome, can reproduce whole-brain fMRI signals. Hypothesis: parameters can be found
+that generate the exact population dynamics on the connectome and fit fMRI data.
+
+Sketches: DiagramaPT1.png (architecture), DiagramaPT2.png (loss), DiagramaPT3.png (notation).
+
+## Pipeline (from the sketches)
+- PINN: input t -> outputs r_i(t) (rate) and v_i(t) (voltage) for N regions; weights w.
+- Autodiff gives dr/dt, dv/dt, substituted into the MPR equations:
+  - tau_m r_i' = Delta/(pi tau_m) + 2 r_i v_i
+  - tau_m v_i' = v_i^2 + eta_i - (pi tau_m r_i)^2 + tau_m J r_i + tau_m G sum_j C_ij r_j(t - D_ij/v)
+  - C_ij = A_ij (.) W_ij, or C_ij = A_ij
+- Hemodynamic integrator (balloon): s' = r - kappa s - gamma(f-1); f' = s; tau_h v' = f - v^(1/alpha);
+  tau_h q' = f E(f)/E0 - v^(1/alpha) q/v; E(f) = 1-(1-E0)^(1/f). Rest: s=0, f=v=q=1.
+- BOLD: y_i = V0[k1(1-q) + k2(1-q/v) + k3(1-v)], k1=4.3 nu0 E0 TE, k2=eps r0 E0 TE, k3=1-eps.
+- Y_hat (N x K) -> FC_sim = Corr(rows i, j), N x N.
+
+## Parameters
+- theta_F = [eta_i, Delta, J, tau_m]; theta_G = [kappa, gamma, alpha, E0, V0, eps]; theta = [theta_F, theta_G].
+
+## Loss
+- Residuals R_r, R_v = LHS - RHS of the MPR equations, at collocation times t_1..t_K.
+- L_fisica = 1/(NK) sum_k sum_i [lambda_r R_r^2 + lambda_v R_v^2]
+- L_theta = sum_p (theta_p - mu_p)^2 / (2 sigma_p^2) (Gaussian prior; log-normal if positive)
+- L_datos = 1 - rho, rho = Corr(a, b), a/b = upper triangle (i<j) of FC_sim / FC_real
+  (diagonal is trivial; lower triangle repeats the upper). Compares pattern, not level.
+- L = lambda_fisica L_fisica + lambda_datos L_datos + lambda_theta L_theta
+- Joint gradient descent on w and theta; repeat.
+
+## Notation (DiagramaPT3)
+N regions i=1..N; collocation times K={t_1..t_K}; A connectome; D fibre lengths; tau_ij = D_ij / v.
+
+## Agreed notation (supersedes the sketch symbols)
+| Object | Symbol |
+| --- | --- |
+| Firing rate | $r_i$ (network output: $\hat r_i$) |
+| Membrane potential | $V_i$ (network output: $\hat V_i$) |
+| Blood volume | $\nu_i$ |
+| Conduction velocity | $c$ |
+| Balloon input scale | $\chi$ |
+| Network weights | $\varphi$ |
+| Measured connectome | $A_{ij}$ (diagonal 0, max-normalised; for now) |
+| Connectome correction | $\omega_{ij}$ (not used; $W_{ij}$ reserved) |
+| Intravascular relaxation | $\varrho_0$ |
+| FC correlation | $\rho_{\text{FC}}$ |
+| Learning rate | $\mathrm{lr}$ |
+| Grubb exponent | $\alpha$ |
+| Balloon input | $z_i = \chi(r_i - \bar r_i)$ |
+| Baseline rate | $\bar r_i$ (time mean of region $i$) |
+
+Collisions resolved by the notation:
+| Before | Problem | Now |
+| --- | --- | --- |
+| $W$ for network weights and for the connectome matrix | two objects, one letter | network weights $\varphi$; the connectome is $A_{ij}$ |
+| $v_i$ for voltage, blood volume and fibre velocity | three objects, one letter | voltage $V_i$, volume $\nu_i$, velocity $c$ |
+| $\alpha$ for learning rate and Grubb exponent | two objects, one letter | learning rate $\mathrm{lr}$; $\alpha$ stays the Grubb exponent |
+| $r_0$ in BOLD | clashes with rate $r_i$ | $\varrho_0$ |
+| $\rho$ for FC correlation | clashes with $\varrho_0$ | $\rho_{\text{FC}}$ |
+
+Network weights are $\varphi$ (the sketch's $w$ and $\psi$ are superseded).
+
+Consequences to carry into the document (to confirm):
+- $\tau_{ij} = D_{ij}/c$ (single $c$, no index); delayed coupling uses $r_j(t - D_{ij}/c)$.
+- Coupling uses $A_{ij}$ directly (measured connectome only, no correction). $\omega_{ij}$ is dropped for now; $W_{ij}$ is not used.
+- The sketch's $w$ (network weights) becomes $\varphi$; $\alpha$ is no longer the learning rate.
+- $\varrho_0$ replaces $r_0$ in $k_2 = \varepsilon \varrho_0 E_0 TE$.
+- Balloon input is $z_i(t) = \chi\,(\hat r_i(t) - \bar r_i)$ with $\bar r_i$ the time mean of region $i$'s rate
+  (per implementation summary, `implementation-v1-summary.md`). Then $\dot s_i = z_i - \kappa s_i - \gamma(f_i - 1)$.
+  Without the shift the Balloon rest is displaced: $f^* = 1 + \bar r/\gamma$. $\chi$ is fixed (0.1 in training).
+- The sketch's $v$ (voltage) is now $V$, and the hemodynamic volume is $\nu$, so the three uses of $v$ are resolved.
+
+## Open points
+- No MPR source paper ingested yet; Montbrio-Pazo-Roxin 2015 is missing from guidance/reference-papers.
+- Implementation summary in `implementation-v1-summary.md` (hypotheses H1-H3, v1 without delays, direct-simulation validation stuck at rho ~ 0).
+
+### guidance/paper-guide/implementation-v1-summary.md
+
+# Hybrid PINN for neural-mass parameter estimation (v1) — summary from the implementation session
+
+Pasted from the other session; kept in Spanish as received.
+
+## 1. Objetivo
+Estimar parámetros de un modelo de cerebro completo para que el BOLD simulado reproduzca la FC en reposo de un sujeto real.
+Piezas: conectoma estructural (dMRI), masa neuronal MPR por región, modelo hemodinámico. Problema inverso resuelto con una PINN (PyTorch).
+
+Hipótesis:
+- H1: la FC simulada se parece a la FC real más de lo que se parece el conectoma estructural solo.
+- H2: con datos sintéticos de parámetros conocidos, el método los recupera.
+- H3: simular la MPR directamente con los parámetros estimados, sin la red, reproduce la FC real.
+
+## 2. Datos
+- 1000BRAINS v1.1, atlas Desikan-Killiany, N = 70, un sujeto.
+- S: conectividad estructural N×N; D: longitudes de fibra en mm (no se usa en v1); FC: Pearson empírica; bold: 300 volúmenes.
+- TR = 2.2 s, TE = 30 ms, 3 T.
+- Preproceso del dataset: regresión de molestias con GSR, pasa-altas, detrend lineal, sin pasa-banda. Al BOLD simulado también se le aplica GSR.
+- Conectoma usado: A = S con diagonal 0 (la autoexcitación ya está en J), normalizado a máximo 1.
+
+## 3. MPR sin retardos (t en s, tau_m = 10 ms)
+- tau_m dr_i/dt = Delta/(pi tau_m) + 2 r_i V_i
+- tau_m dV_i/dt = V_i^2 + eta_i - (pi tau_m r_i)^2 + tau_m J r_i + tau_m G sum_j A_ij r_j
+
+| Parámetro | v1 |
+| --- | --- |
+| Delta | 0.7 fijo (Rabuffo) |
+| J | 14.5 fijo (Rabuffo) |
+| tau_m | 0.01 s fijo |
+| eta_i | uno por región, se estima; inicio -4.6 (rango biestable -5.35..-2.45) |
+| G | acople global, se estima |
+| Retardos | ninguno en v1; luego D_ij/c, c = 4 m/s |
+
+- G0 = 1/(suma media por fila de A).
+- Equilibrios de región aislada con eta = -4.6: bajo ≈ 5.7 Hz, frontera inestable ≈ 45 Hz, alto ≈ 101 Hz.
+
+## 4. Hemodinámica
+- Balloon-Windkessel (Friston 2000): s, f, nu, q; kappa 0.65, gamma 0.41, tau_h 0.98, alpha 0.32, E0 0.34.
+- Entrada: z_i = chi (r_i - rbar_i), con rbar_i = promedio en el tiempo de la región i. Con r crudo el reposo se corre: f* = 1 + rbar/gamma.
+- chi fija, 0.1 en entrenamiento (std de z ~ 0.1; si z es grande, f < 0 y explota).
+- BOLD: Stephan 2007 ec. 12, V0 = 4, eps = 0.47, vartheta0 = 84.8, varrho0 = 110, TE = 0.03.
+- RK4 a mano en PyTorch, diferenciable, sin in-place; dt_h = 0.2 s; reposo inicial s=0, f=nu=q=1; BOLD cada TR. Validado contra scipy.
+
+## 5. PINN
+- Una red para todas las regiones: t -> 2N = 140 salidas (r_1..r_N, V_1..V_N).
+- 2 capas ocultas de 512, tanh; t escalado a [-1, 1].
+- r pasa por softplus; V libre. Derivadas por autodiff respecto a t.
+- Entrenables: pesos (varphi), eta (N), G; Adam lr 1e-3; G recortado a >= 0.
+
+## 6. Pérdida
+L = lambda_fis L_fis + lambda_datos L_datos + lambda_theta L_theta
+
+- L_fis: K = 1000 instantes aleatorios por época; R_r = tau_m dr/dt - (Delta/(pi tau_m) + 2 r V); R_V = tau_m dV/dt - (V^2 + eta - (pi tau_m r)^2 + tau_m J r + tau_m G sum_j A_ij r_j);
+  L_fis = 1/(NK) sum_k sum_i [lambda_rv R_r^2 + (1 - lambda_rv) R_V^2], lambda_rv = 0.5.
+  R_r está en Hz y pesa más que R_V; balance pendiente. R_V no debería llegar a 0 (absorbe el ruido).
+- L_datos: red en malla regular -> z -> Balloon (RK4) -> BOLD en TR -> GSR -> FC sim (Pearson); comparada con FC real en 2415 pares del triángulo superior:
+  L_datos = MSE(FC_sim, FC_real) + (1 - rho_FC). No se compara el BOLD punto a punto (actividad espontánea, unidades distintas).
+- L_theta: eta_i ~ N(-4.6, 1^2); G ~ N(G0, (0.5 G0)^2); lambda_theta = 1.
+- lambda_datos = 1; lambda_fis = L_datos/L_fis recalculado cada 10 épocas (medido solo en época 0, la física dejó de pesar). Alternativa con fundamento pendiente: lambda_fis = N T / (2 sigma^2).
+- Parada: hasta 1000 épocas; cada 50 se revisa eta (< 0.01), G (< 1 %), mejora de L_datos (< 0.005); se detiene ante nan.
+
+## 7. Resultados
+- Primera corrida (100 épocas, lambda_fis fijado en época 0): L_datos 0.995 -> 0.28 (rho_FC ≈ 0.72); L_fis 258 -> 0.41; peso de la física ~1 -> ~0.0016.
+- eta cambió ~5e-5 y G ~5e-6: el ajuste lo hizo la red, no los parámetros. La red compensa cualquier eta ajustando V, así que el gradiente de eta no tiene dirección consistente. Para que los parámetros se muevan, la física debe pesar en serio.
+- Cambios posteriores: lambda_fis recalculado cada 10 épocas; término MSE en L_datos.
+
+## 8. Validación directa (H3)
+- MPR sin la red, con eta y G aprendidos, ruido aditivo en V (sigma = 0.5, provisional), paso 0.5 ms; mismo Balloon, BOLD, GSR, FC; chi recalculado para la r simulada.
+- Resultado: FC plana, rho ≈ 0.
+- Barrido de G (eta = -4.6, sigma = 0.5): rho ≈ 0 de 0 a 6 G0 (0.033 en 6 G0, 0.035 en 6.5 G0); FC media = -0.014 ≈ -1/(N-1) (lo que da la GSR con señales independientes); fracción en estado alto = 0 (todo en ~5.7 Hz temblando por ruido); desde 7 G0 explota.
+- Diagnóstico: la FC en reposo de la MPR aparece cuando las regiones saltan entre estado bajo y alto y los saltos se propagan por el conectoma (cascadas, Rabuffo). Con estos sigma y G no hay saltos. La explosión en 7 G0 es numérica: hubs en estado alto con oscilaciones rápidas que Euler no resuelve (ni con 0.05 ms). Euler a 0.5 ms sacaba artificialmente regiones del estado alto.
+- Solo en la validación se cambió a Heun estocástico, paso 0.1 ms (estable). El entrenamiento no se tocó: la MPR solo aparece en los residuos.
+- Pendiente: barrido con Heun en 6.5-10 G0 buscando saltos y rho > 0.
+
+## 9. Pendientes
+- Calibrar sigma y G0 con el barrido directo; luego lambda_fis = N T / (2 sigma^2); obtener chi desde la simulación directa.
+- Entrenar en dos fases (solo L_fis, luego L_datos); lr propio mayor (1e-2) para eta y G; considerar L-BFGS en la fase de física.
+- H2 con datos sintéticos (identificabilidad); conectoma barajado, varias semillas, sensibilidad al uso de la desviación como entrada del Balloon; retardos (D, c = 4 m/s) después.
+- Implementación: crear eta y G en la misma celda que el optimizador; si la malla empieza en t = -20 s, desplazar índices del TR; confirmar que la FC del archivo está en [-1, 1] sin Fisher-z.
+- Rendimiento: ~85 % del tiempo es el bucle secuencial del Balloon; dt_h = 0.2 s ayudó; otra opción: calcular L_datos cada pocas épocas.
